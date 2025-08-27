@@ -1,21 +1,15 @@
+/* GLOBAIS E VARIÁVEIS */
 html {
   scroll-behavior: smooth;
 }
 :root {
     --background-dark: #111111;
     --primary-blue: rgba(9, 9, 121, 1);
-    --primary-accent: rgba(0, 212, 255, 1);
+    --primary-accent: rgba(0, 212, 255, 1); /* Este é o azul dos seus botões */
     --text-light: #f0f0f0;
     --text-dark: #333;
     --anton-font: 'Anton', sans-serif;
     --roboto-font: 'Roboto', sans-serif;
-}
-
-p {
-    font-family: "Oswald", sans-serif;
-    font-optical-sizing: auto;
-    font-weight: 300;
-    font-size: 1.1rem;
 }
 
 body {
@@ -25,16 +19,27 @@ body {
     margin: 0;
     padding: 0;
     line-height: 1.6;
+    overflow-x: hidden;
 }
 
+p {
+    font-family: 'Helvetica', sans-serif;
+    font-weight: 300;
+    line-height: 1.6;
+}
+
+
+/* HEADER */
 .main-header {
-    background-color: rgba(17, 17, 17, 0.8);
+    background-color: rgba(17, 17, 17, 0.95);
     backdrop-filter: blur(10px);
     padding: 10px 5%;
     position: fixed;
-    width: 90%;
+    width: 100%;
     top: 0;
+    left: 0;
     z-index: 1000;
+    box-sizing: border-box;
 }
 
 .header-content {
@@ -43,10 +48,12 @@ body {
     align-items: center;
     max-width: 1200px;
     margin: 0 auto;
+    width: 100%;
 }
 
 .logo {
     height: 50px;
+    flex-shrink: 0;
 }
 
 .main-header nav a {
@@ -57,12 +64,15 @@ body {
     font-size: 1.1rem;
     letter-spacing: 1px;
     transition: color 0.3s ease;
+    white-space: nowrap;
 }
 
 .main-header nav a:hover {
     color: var(--primary-accent);
 }
 
+
+/* HERO SECTION */
 .hero-section {
     display: flex;
     align-items: center;
@@ -103,87 +113,15 @@ body {
     background-color: #fff;
 }
 
-.split-section {
-    display: flex;
-    align-items: center;
-    background-color: #fff;
-    color: var(--text-dark);
-    padding: 80px 5%;
-    gap: 40px;
-    max-width: 1200px;
-    margin: 40px auto;
-}
 
-.text-content {
-    flex: 1; 
-}
-
-.text-content h2 {
-    font-family: var(--anton-font);
-    font-size: 2.8rem;
-    letter-spacing: 1px;
-    margin-top: 0;
-    color: var(--primary-blue);
-}
-
-.image-gallery {
-    flex: 1; 
-    position: relative;
-    max-width: 500px;
-    aspect-ratio: 1 / 1; 
-}
-
-.slider {
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    border-radius: 10px;
-}
-
-.slide {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: none; 
-}
-
-.slide.active {
-    display: block; 
-}
-
-.next-btn {
-    position: absolute;
-    bottom: 20px;
-    right: 20px;
-    background-color: var(--primary-accent);
-    color: var(--background-dark);
-    border: none;
-    border-radius: 50%;
-    width: 50px;
-    height: 50px;
-    font-size: 24px;
-    cursor: pointer;
-    transition: transform 0.3s ease;
-}
-
-.next-btn:hover {
-    transform: scale(1.1);
-}
-
-
-/* styles.css */
-
-/* =================================== */
-/* Estilos da Nova Seção de Preços     */
-/* =================================== */
-
+/* SEÇÃO DE PREÇOS */
 .pricing-section {
     padding: 80px 5%;
-    background-color: #1c1c1c; /* Mantém um fundo escuro mas diferente do body */
+    background-color: #1c1c1c;
 }
 
 .pricing-container {
-    max-width: 900px; /* Um pouco mais largo para a tabela */
+    max-width: 900px;
     margin: 0 auto;
     text-align: center;
 }
@@ -216,7 +154,7 @@ body {
 
 .pricing-grid {
     display: grid;
-    grid-template-columns: 1fr; /* Apenas uma coluna por padrão */
+    grid-template-columns: 1fr;
     gap: 15px;
 }
 
@@ -242,6 +180,7 @@ body {
     font-size: 1.1rem;
     font-weight: bold;
     text-align: left;
+    font-family: var(--roboto-font);
 }
 
 .price-icon {
@@ -279,25 +218,105 @@ body {
     color: #ddd;
 }
 
-/* Ajuste para grids com itens menores, como Bonés e Slides */
 .pricing-grid.smaller-items {
     max-width: 600px;
     margin: 20px auto 0;
 }
 
-/* Responsividade para telas maiores */
-@media (min-width: 768px) {
-    .pricing-grid {
-        /* Duas colunas em telas maiores */
-        grid-template-columns: 1fr 1fr;
-    }
-    .pricing-grid.smaller-items {
-        /* Mantém duas colunas mas com o tamanho máximo */
-       grid-template-columns: 1fr 1fr;
-    }
+
+/* SPLIT SECTION (RESULTADOS) */
+.split-section {
+    display: flex;
+    align-items: center;
+    background-color: #fff;
+    color: var(--text-dark);
+    padding: 80px 5%;
+    gap: 40px;
+    max-width: 1200px;
+    margin: 40px auto;
+}
+
+.text-content {
+    flex: 1;
+}
+
+.text-content h2 {
+    font-family: var(--anton-font);
+    font-size: 2.8rem;
+    letter-spacing: 1px;
+    margin-top: 0;
+    color: var(--primary-blue);
+}
+
+.image-gallery {
+    flex: 1;
+    position: relative;
+    max-width: 500px;
+    aspect-ratio: 1 / 1;
+}
+
+.slider {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    border-radius: 10px;
+}
+
+.slide {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: none;
+}
+
+.slide.active {
+    display: block;
+}
+
+/* Estilo unificado para os botões next-btn e prev-btn */
+.next-btn, .prev-btn {
+    position: absolute;
+    bottom: 20px;
+    background-color: var(--primary-accent); /* O azul vibrante dos botões */
+    color: white; /* Cor da seta (agora controlada pelo fill do SVG) */
+    border: none;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    display: flex; /* Para centralizar o SVG */
+    justify-content: center; /* Centraliza horizontalmente o SVG */
+    align-items: center; /* Centraliza verticalmente o SVG */
+    cursor: pointer;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+    z-index: 10;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    padding: 0; /* Remover padding padrão do botão */
+}
+
+.next-btn:hover, .prev-btn:hover {
+    transform: scale(1.1);
+    background-color: #00bfff; /* Um tom um pouco mais claro no hover */
+}
+
+/* Estilo para os ícones SVG dentro dos botões */
+.arrow-icon {
+    width: 24px; /* Tamanho do ícone SVG */
+    height: 24px;
+    display: block; /* Garante que o SVG se comporte como um bloco para o tamanho */
 }
 
 
+/* Posições específicas para cada botão */
+.next-btn {
+    right: 20px;
+}
+
+.prev-btn {
+    left: 20px;
+}
+
+
+/* HOW IT WORKS */
 .how-it-works-section {
     padding: 80px 5%;
     text-align: center;
@@ -342,17 +361,12 @@ body {
     font-size: 1.5rem;
 }
 
-.main-footer {
-    text-align: center;
-    padding: 20px;
-    background-color: #000;
-    font-size: 0.9rem;
-}
 
+/* CONTATO */
 .contact-section {
     padding: 80px 5%;
     text-align: center;
-    background-color: #1c1c1c; 
+    background-color: #1c1c1c;
 }
 
 .contact-section h2 {
@@ -372,7 +386,7 @@ body {
 
 .whatsapp-button {
     display: inline-block;
-    background-color: #25D366; 
+    background-color: #25D366;
     color: #fff;
     font-family: var(--anton-font);
     font-size: 1.5rem;
@@ -408,16 +422,205 @@ body {
 }
 
 .social-icon img {
-    width: 100px;
-    height: 100px;
+    width: 80px;
+    height: 80px;
+    filter: invert(1);
+}
+
+
+/* FOOTER */
+.main-footer {
+    text-align: center;
+    padding: 20px;
+    background-color: #000;
+    font-size: 0.9rem;
+}
+
+
+/* ################################# */
+/* ### AJUSTES DE RESPONSIVIDADE ### */
+/* ################################# */
+
+@media (min-width: 769px) {
+    .pricing-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+    .pricing-grid.smaller-items {
+       grid-template-columns: 1fr 1fr;
+    }
 }
 
 @media (max-width: 768px) {
+    /* HEADER */
+    .header-content {
+        justify-content: center;
+    }
+    .main-header nav {
+        display: none;
+    }
+    .logo {
+        height: 40px;
+    }
+
+    /* HERO */
+    .hero-section {
+        min-height: 70vh;
+        padding-top: 100px;
+    }
+    .hero-content h1 {
+        font-size: 2.5rem;
+        line-height: 1.2;
+    }
+    .hero-content p {
+        font-size: 1rem;
+        padding: 0 15px;
+    }
+    .cta-button {
+        font-size: 1rem;
+        padding: 10px 25px;
+    }
+
+    /* PREÇOS */
+    .pricing-section {
+        padding: 40px 20px;
+    }
+    .pricing-container h2 {
+        font-size: 2.2rem;
+    }
+    .pricing-container .subtitle {
+        font-size: 0.95rem;
+        margin-bottom: 30px;
+    }
+    .category-title {
+        font-size: 1.5rem;
+        margin-top: 30px;
+        margin-bottom: 20px;
+    }
+    .pricing-grid {
+        gap: 10px;
+    }
+    .price-item {
+        padding: 12px 15px;
+    }
+    .service-name {
+        font-size: 1rem;
+        gap: 10px;
+    }
+    .price-icon {
+        width: 30px;
+        height: 30px;
+    }
+    .service-price {
+        font-size: 1.4rem;
+        min-width: 70px;
+    }
+    .service-price small {
+        font-size: 0.6rem;
+    }
+    .observation-note {
+        font-size: 0.8rem;
+        padding: 10px;
+        margin: 15px 0;
+    }
+    .pricing-grid.smaller-items {
+        max-width: 100%;
+    }
+
+    /* SPLIT SECTION (RESULTADOS) */
     .split-section {
         flex-direction: column;
+        padding: 40px 20px;
+        margin: 20px auto;
+    }
+    .text-content {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+    .text-content h2 {
+        font-size: 2rem;
+    }
+    .text-content p {
+        font-size: 1rem;
+    }
+    .image-gallery {
+        width: 100%;
+        max-width: 400px;
+        height: auto;
+    }
+    .next-btn, .prev-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 20px; /* Reduz o tamanho da fonte, que não afeta o SVG diretamente mas mantém o padrão */
+        bottom: 10px;
+    }
+    .next-btn {
+        right: 10px;
+    }
+    .prev-btn {
+        left: 10px;
+    }
+
+    /* COMO FUNCIONA */
+    .how-it-works-section {
+        padding: 40px 20px;
+    }
+    .how-it-works-section h2 {
+        font-size: 2.2rem;
+        margin-bottom: 40px;
     }
     .steps-container {
         flex-direction: column;
-        align-items: center;
+        gap: 30px;
+    }
+    .step {
+        max-width: 90%;
+        margin: 0 auto;
+    }
+    .step span {
+        width: 40px;
+        height: 40px;
+        line-height: 40px;
+        font-size: 1.2rem;
+        margin-bottom: 10px;
+    }
+    .step h3 {
+        font-size: 1.3rem;
+    }
+    .step p {
+        font-size: 0.95rem;
+    }
+    
+    /* CONTATO */
+    .contact-section {
+        padding: 40px 20px;
+    }
+    .contact-section h2 {
+        font-size: 2.2rem;
+        margin-bottom: 15px;
+    }
+    .contact-section p {
+        font-size: 1rem;
+        margin: 0 auto 30px;
+    }
+    .whatsapp-button {
+        font-size: 1.2rem;
+        padding: 12px 30px;
+    }
+    .social-links {
+        margin-top: 30px;
+    }
+    .social-links p {
+        font-size: 0.9rem;
+        margin-bottom: 15px;
+    }
+    .social-icon img {
+        width: 40px;
+        height: 40px;
+    }
+    
+    /* FOOTER */
+    .main-footer {
+        font-size: 0.8rem;
+        padding: 15px 20px;
     }
 }

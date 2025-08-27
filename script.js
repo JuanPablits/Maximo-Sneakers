@@ -14,7 +14,16 @@ function showSlide(index) {
 function nextSlide() {
     currentSlide++;
     if (currentSlide >= slides.length) {
-        currentSlide = 0; // Volta para o primeiro slide
+        currentSlide = 0; // Volta para o primeiro slide se chegar ao final
+    }
+    showSlide(currentSlide);
+}
+
+// Função para voltar o slide
+function prevSlide() {
+    currentSlide--;
+    if (currentSlide < 0) {
+        currentSlide = slides.length - 1; // Vai para o último slide se voltar do primeiro
     }
     showSlide(currentSlide);
 }
