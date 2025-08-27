@@ -8,7 +8,6 @@ const accessToken = 'knsoFyXohlck3hu9veCzUctMXWK74f4sVnNsLZEz1EI';
 let slides = [];
 let currentSlide = 0;
 
-
 // ##################################################################
 // # FUNÇÃO PRINCIPAL QUE RODA QUANDO A PÁGINA CARREGA
 // ##################################################################
@@ -17,44 +16,39 @@ document.addEventListener('DOMContentLoaded', () => {
     carregarResultados();
 });
 
-
 // ##################################################################
 // # FUNÇÃO PARA BUSCAR E RENDERIZAR OS SERVIÇOS E PREÇOS
 // ##################################################################
 async function carregarServicos() {
-    // Monta a URL da API para buscar as entradas do tipo 'servico'
+    // CORREÇÃO APLICADA AQUI: o parâmetro 'order' foi corrigido.
     const url = `https://cdn.contentful.com/spaces/${spaceId}/environments/master/entries?access_token=${accessToken}&content_type=servico&order=fields.preco`;
     
     try {
         const response = await fetch(url);
-        if (!response.ok) throw new Error('Falha ao carregar os serviços.');
-        
         const data = await response.json();
-        const assets = new Map(data.includes.Asset.map(asset => [asset.sys.id, asset.fields]));
 
-        // Seleciona os containers no HTML onde os preços serão inseridos
+        if (!response.ok || !data.items) {
+            console.error("Resposta da API de Serviços com erro:", data);
+            throw new Error('Falha ao carregar os serviços ou dados inválidos.');
+        }
+        
+        const assets = data.includes && data.includes.Asset ? new Map(data.includes.Asset.map(asset => [asset.sys.id, asset.fields])) : new Map();
+
         const limpezasGrid = document.getElementById('limpezas-grid');
         const limpezasOutrosGrid = document.getElementById('limpezas-outros-grid');
         const restauracoesGrid = document.getElementById('restauracoes-grid');
         const extrasGrid = document.getElementById('extras-grid');
 
-        // Limpa qualquer conteúdo estático que possa ter sobrado
         limpezasGrid.innerHTML = '';
         limpezasOutrosGrid.innerHTML = '';
         restauracoesGrid.innerHTML = '';
         extrasGrid.innerHTML = '';
 
-        // Itera sobre cada serviço recebido da API
         data.items.forEach(item => {
             const { nomeDoServico, preco, observacaoDoPreco, categoria, icone } = item.fields;
-            
-            // Pega a URL do ícone
-            const urlIcone = icone ? `https:${assets.get(icone.sys.id).file.url}` : 'img/placeholder.png';
-
-            // Formata a observação de preço (ex: "(a partir de)")
+            const urlIcone = icone ? `https:${assets.get(icone.sys.id)?.file?.url}` : 'img/placeholder.png';
             const precoObservacaoHTML = observacaoDoPreco ? `<small>${observacaoDoPreco}</small>` : '';
 
-            // Cria o HTML para o item de serviço
             const itemHTML = `
                 <div class="price-item">
                     <div class="service-name">
@@ -65,10 +59,9 @@ async function carregarServicos() {
                 </div>
             `;
             
-            // Insere o HTML no grid da categoria correta
             switch (categoria) {
                 case 'Limpezas':
-                    if (nomeDoServico.includes('Boné') || nomeDoServico.includes('Slides')) {
+                    if (nomeDoServico.toLowerCase().includes('boné') || nomeDoServico.toLowerCase().includes('slides')) {
                         limpezasOutrosGrid.innerHTML += itemHTML;
                     } else {
                         limpezasGrid.innerHTML += itemHTML;
@@ -84,11 +77,9 @@ async function carregarServicos() {
         });
 
     } catch (error) {
-        console.error('Erro ao buscar serviços:', error);
-        // Você pode adicionar uma mensagem de erro no site aqui se quiser
+        console.error('ERRO EM carregarServicos:', error);
     }
 }
-
 
 // ##################################################################
 // # FUNÇÃO PARA BUSCAR E RENDERIZAR OS RESULTADOS NA GALERIA
@@ -98,36 +89,37 @@ async function carregarResultados() {
 
     try {
         const response = await fetch(url);
-        if (!response.ok) throw new Error('Falha ao carregar os resultados da galeria.');
-
         const data = await response.json();
-        const assets = new Map(data.includes.Asset.map(asset => [asset.sys.id, asset.fields]));
-        const sliderContainer = document.getElementById('gallery-slider');
-        sliderContainer.innerHTML = ''; // Limpa o container
+        
+        if (!response.ok || !data.items) {
+            console.error("Resposta da API de Resultados com erro:", data);
+            throw new Error('Falha ao carregar os resultados da galeria ou dados inválidos.');
+        }
 
-        // Itera sobre cada resultado e cria as imagens
+        const assets = data.includes && data.includes.Asset ? new Map(data.includes.Asset.map(asset => [asset.sys.id, asset.fields])) : new Map();
+        const sliderContainer = document.getElementById('gallery-slider');
+        sliderContainer.innerHTML = '';
+
         data.items.forEach(item => {
             const { fotoAntes, fotoDepois } = item.fields;
             if (fotoAntes && fotoDepois) {
-                const urlFotoAntes = `https:${assets.get(fotoAntes.sys.id).file.url}`;
-                const urlFotoDepois = `https:${assets.get(fotoDepois.sys.id).file.url}`;
+                const urlFotoAntes = `https:${assets.get(fotoAntes.sys.id)?.file?.url}`;
+                const urlFotoDepois = `https:${assets.get(fotoDepois.sys.id)?.file?.url}`;
                 
                 sliderContainer.innerHTML += `<img src="${urlFotoAntes}" alt="Antes" class="slide">`;
                 sliderContainer.innerHTML += `<img src="${urlFotoDepois}" alt="Depois" class="slide">`;
             }
         });
 
-        // Após carregar as imagens, inicializa a lógica do slider
         inicializarSlider();
 
     } catch (error) {
-        console.error('Erro ao buscar resultados:', error);
+        console.error('ERRO EM carregarResultados:', error);
     }
 }
 
-
 // ##################################################################
-// # LÓGICA DO SLIDER (AGORA EM UMA FUNÇÃO DE INICIALIZAÇÃO)
+// # LÓGICA DO SLIDER
 // ##################################################################
 function inicializarSlider() {
     slides = document.querySelectorAll('#gallery-slider .slide');
