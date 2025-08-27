@@ -1,0 +1,328 @@
+html {
+  scroll-behavior: smooth;
+}
+:root {
+    --background-dark: #111111;
+    --primary-blue: rgba(9, 9, 121, 1);
+    --primary-accent: rgba(0, 212, 255, 1);
+    --text-light: #f0f0f0;
+    --text-dark: #333;
+    --anton-font: 'Anton', sans-serif;
+    --roboto-font: 'Roboto', sans-serif;
+}
+
+body {
+    font-family: var(--roboto-font);
+    background-color: var(--background-dark);
+    color: var(--text-light);
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+}
+
+.main-header {
+    background-color: rgba(17, 17, 17, 0.8);
+    backdrop-filter: blur(10px);
+    padding: 10px 5%;
+    position: fixed;
+    width: 90%;
+    top: 0;
+    z-index: 1000;
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.logo {
+    height: 50px;
+}
+
+.main-header nav a {
+    color: var(--text-light);
+    text-decoration: none;
+    margin-left: 25px;
+    font-family: var(--anton-font);
+    font-size: 1.1rem;
+    letter-spacing: 1px;
+    transition: color 0.3s ease;
+}
+
+.main-header nav a:hover {
+    color: var(--primary-accent);
+}
+
+.hero-section {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    min-height: 60vh;
+    padding: 120px 20px 40px;
+    background: linear-gradient(rgba(17,17,17,0.8), rgba(17,17,17,0.9)), url('https://via.placeholder.com/1920x1080/111111/FFFFFF?text=Plano+de+Fundo') no-repeat center center/cover;
+}
+
+.hero-content h1 {
+    font-family: var(--anton-font);
+    font-size: 4rem;
+    letter-spacing: 2px;
+    margin: 0;
+    color: #fff;
+    text-shadow: 2px 2px 10px rgba(0,0,0,0.5);
+}
+
+.hero-content p {
+    font-size: 1.2rem;
+    max-width: 600px;
+    margin: 15px auto 30px;
+}
+
+.cta-button {
+    font-family: var(--anton-font);
+    background-color: var(--primary-accent);
+    color: var(--background-dark);
+    padding: 12px 30px;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 1.2rem;
+    transition: background-color 0.3s ease;
+}
+
+.cta-button:hover {
+    background-color: #fff;
+}
+
+.split-section {
+    display: flex;
+    align-items: center;
+    background-color: #fff;
+    color: var(--text-dark);
+    padding: 80px 5%;
+    gap: 40px;
+    max-width: 1200px;
+    margin: 40px auto;
+}
+
+.text-content {
+    flex: 1; 
+}
+
+.text-content h2 {
+    font-family: var(--anton-font);
+    font-size: 2.8rem;
+    letter-spacing: 1px;
+    margin-top: 0;
+    color: var(--primary-blue);
+}
+
+.image-gallery {
+    flex: 1; 
+    position: relative;
+    max-width: 500px;
+    aspect-ratio: 1 / 1; 
+}
+
+.slider {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    border-radius: 10px;
+}
+
+.slide {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: none; 
+}
+
+.slide.active {
+    display: block; 
+}
+
+.next-btn {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    background-color: var(--primary-accent);
+    color: var(--background-dark);
+    border: none;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    font-size: 24px;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.next-btn:hover {
+    transform: scale(1.1);
+}
+
+
+.services-section {
+    padding: 80px 5%;
+    text-align: center;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.services-section h2 {
+    font-family: var(--anton-font);
+    font-size: 2.8rem;
+    letter-spacing: 1px;
+    margin-bottom: 50px;
+}
+
+.services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+}
+
+.service-card {
+    background-color: #1c1c1c;
+    padding: 30px;
+    border-radius: 10px;
+}
+
+.service-icon {
+    width: 60px;
+    height: 60px;
+    margin-bottom: 20px;
+}
+
+.service-card h3 {
+    font-family: var(--anton-font);
+    font-size: 1.5rem;
+    color: var(--primary-accent);
+}
+
+
+.how-it-works-section {
+    padding: 80px 5%;
+    text-align: center;
+    background-color: #fff;
+    color: var(--text-dark);
+}
+
+.how-it-works-section h2 {
+    font-family: var(--anton-font);
+    font-size: 2.8rem;
+    letter-spacing: 1px;
+    margin-bottom: 60px;
+}
+
+.steps-container {
+    display: flex;
+    justify-content: space-around;
+    gap: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.step {
+    max-width: 250px;
+}
+
+.step span {
+    display: inline-block;
+    width: 50px;
+    height: 50px;
+    line-height: 50px;
+    border-radius: 50%;
+    background-color: var(--primary-blue);
+    color: #fff;
+    font-family: var(--anton-font);
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+}
+
+.step h3 {
+    font-family: var(--anton-font);
+    font-size: 1.5rem;
+}
+
+.main-footer {
+    text-align: center;
+    padding: 20px;
+    background-color: #000;
+    font-size: 0.9rem;
+}
+
+.contact-section {
+    padding: 80px 5%;
+    text-align: center;
+    background-color: #1c1c1c; 
+}
+
+.contact-section h2 {
+    font-family: var(--anton-font);
+    font-size: 2.8rem;
+    letter-spacing: 1px;
+    margin-bottom: 20px;
+    color: var(--text-light);
+}
+
+.contact-section p {
+    max-width: 600px;
+    margin: 0 auto 40px;
+    font-size: 1.1rem;
+    line-height: 1.7;
+}
+
+.whatsapp-button {
+    display: inline-block;
+    background-color: #25D366; 
+    color: #fff;
+    font-family: var(--anton-font);
+    font-size: 1.5rem;
+    letter-spacing: 1px;
+    text-decoration: none;
+    padding: 15px 40px;
+    border-radius: 50px;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+.whatsapp-button:hover {
+    transform: scale(1.05);
+    background-color: #128C7E;
+}
+
+.social-links {
+    margin-top: 50px;
+}
+
+.social-links p {
+    font-size: 1rem;
+    margin-bottom: 20px;
+}
+
+.social-icon {
+    margin: 0 15px;
+    display: inline-block;
+    transition: transform 0.3s ease;
+}
+
+.social-icon:hover {
+    transform: scale(1.2);
+}
+
+.social-icon img {
+    width: 100px;
+    height: 100px;
+}
+
+@media (max-width: 768px) {
+    .split-section {
+        flex-direction: column;
+    }
+    .steps-container {
+        flex-direction: column;
+        align-items: center;
+    }
+}
