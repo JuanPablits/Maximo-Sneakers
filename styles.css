@@ -5,7 +5,7 @@ html {
 :root {
     --background-dark: #111111;
     --primary-blue: rgba(9, 9, 121, 1);
-    --primary-accent: rgba(0, 212, 255, 1); /* Este é o azul dos seus botões */
+    --primary-accent: rgba(0, 212, 255, 1); 
     --text-light: #f0f0f0;
     --text-dark: #333;
     --anton-font: 'Anton', sans-serif;
@@ -300,9 +300,9 @@ p {
 
 /* Estilo para os ícones SVG dentro dos botões */
 .arrow-icon {
-    width: 24px; /* Tamanho do ícone SVG */
+    width: 24px; 
     height: 24px;
-    display: block; /* Garante que o SVG se comporte como um bloco para o tamanho */
+    display: block; 
 }
 
 
@@ -550,7 +550,7 @@ p {
     .next-btn, .prev-btn {
         width: 40px;
         height: 40px;
-        font-size: 20px; /* Reduz o tamanho da fonte, que não afeta o SVG diretamente mas mantém o padrão */
+        font-size: 20px;
         bottom: 10px;
     }
     .next-btn {

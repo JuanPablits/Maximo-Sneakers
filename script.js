@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
 // # FUNÇÃO PARA BUSCAR E RENDERIZAR OS SERVIÇOS E PREÇOS
 // ##################################################################
 async function carregarServicos() {
-    // CORREÇÃO APLICADA AQUI: o parâmetro 'order' foi corrigido.
+    
     const url = `https://cdn.contentful.com/spaces/${spaceId}/environments/master/entries?access_token=${accessToken}&content_type=servico&order=fields.preco`;
     
     try {
