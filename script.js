@@ -4,22 +4,41 @@
 const spaceId = 'pusavj4b0ybx';
 const accessToken = 'knsoFyXohlck3hu9veCzUctMXWK74f4sVnNsLZEz1EI';
 
-// Variáveis globais para o slider
+// Variáveis globais para os sliders
 let slides = [];
 let currentSlide = 0;
+let customizacaoSlides = [];
+let currentCustomizacaoSlide = 0;
 
 // ##################################################################
-// # FUNÇÃO PRINCIPAL QUE RODA QUANDO A PÁGINA CARREGA
+// # FUNÇÃO PRINCIPAL
 // ##################################################################
 document.addEventListener('DOMContentLoaded', () => {
     carregarServicos();
     carregarResultados();
+    carregarCustomizacoes();
 });
 
 // ##################################################################
-// # FUNÇÃO PARA BUSCAR E RENDERIZAR OS SERVIÇOS E PREÇOS
+// # FUNÇÃO PARA CARREGAR SERVIÇOS
 // ##################################################################
 async function carregarServicos() {
+    // Verificação de chaves
+    if (!spaceId || !accessToken || spaceId === 'SEU_SPACE_ID_AQUI' || accessToken === 'SEU_ACCESS_TOKEN_AQUI') {
+        console.error('ERRO: As chaves do Contentful (spaceId ou accessToken) não foram configuradas corretamente no script.js.');
+        const servicosContainer = document.getElementById('servicos');
+        if (servicosContainer) {
+            servicosContainer.innerHTML = `
+            <div style="text-align: center; padding: 50px; background-color: #333; color: #ff6347; border-radius: 8px; margin: 20px auto; max-width: 600px;">
+                <h2>Erro de Configuração</h2>
+                <p>Por favor, insira suas chaves <code>spaceId</code> e <code>accessToken</code> do Contentful no arquivo <code>script.js</code>.</p>
+                <p>Sem essas chaves, não é possível carregar os serviços e conteúdos dinâmicos.</p>
+            </div>
+        `;
+        }
+        return;
+    }
+
     const url = `https://cdn.contentful.com/spaces/${spaceId}/environments/master/entries?access_token=${accessToken}&content_type=servico`;
     
     try {
@@ -33,9 +52,6 @@ async function carregarServicos() {
         
         const assets = data.includes && data.includes.Asset ? new Map(data.includes.Asset.map(asset => [asset.sys.id, asset.fields])) : new Map();
 
-        // --- NOVA LÓGICA DE ORGANIZAÇÃO ---
-
-        // 1. SEPARA OS SERVIÇOS EM ARRAYS POR CATEGORIA
         const categorias = {
             limpezas: [],
             restauracoes: [],
@@ -60,9 +76,6 @@ async function carregarServicos() {
             }
         });
 
-        // 2. ORDENA CADA CATEGORIA INDIVIDUALMENTE
-        
-        // Ordena Limpezas por prioridade de nome
         categorias.limpezas.sort((a, b) => {
             const nameA = a.fields.nomeDoServico.toLowerCase();
             const nameB = b.fields.nomeDoServico.toLowerCase();
@@ -76,31 +89,36 @@ async function carregarServicos() {
             return priority(nameA) - priority(nameB) || a.fields.preco - b.fields.preco;
         });
 
-        // Ordena Restaurações pelo campo "Ordem de Exibição"
         categorias.restauracoes.sort((a, b) => (a.fields.ordemDeExibicao || 99) - (b.fields.ordemDeExibicao || 99));
-
-        // Ordena Customizações e Extras por preço
         categorias.customizacoes.sort((a, b) => a.fields.preco - b.fields.preco);
         categorias.extras.sort((a, b) => a.fields.preco - b.fields.preco);
 
-
-        // 3. RENDERIZA CADA CATEGORIA NO SEU DEVIDO LUGAR
         const renderizarServicos = (servicos, container) => {
-            container.innerHTML = ''; // Limpa o container primeiro
+            if (!container) return;
+            container.innerHTML = '';
             servicos.forEach(item => {
                 const { nomeDoServico, preco, observacaoDoPreco, icone } = item.fields;
                 const urlIcone = icone ? `https:${assets.get(icone.sys.id)?.file?.url}` : 'img/placeholder.png';
                 const precoObservacaoHTML = observacaoDoPreco ? `<small>${observacaoDoPreco}</small>` : '';
 
+                let descriptionHTML = '';
+                if (nomeDoServico.toLowerCase() === 'limpeza exclusive') {
+                    descriptionHTML = `<span class="special-description">Para pares de grife e edições exclusivas.</span>`;
+                }
+                
                 const itemHTML = `
                     <div class="price-item">
                         <div class="service-name">
                             <img src="${urlIcone}" alt="Ícone de ${nomeDoServico}" class="price-icon">
-                            <span>${nomeDoServico.toUpperCase()}</span>
+                            <div class="service-details">
+                                <span>${nomeDoServico.toUpperCase()}</span>
+                                ${descriptionHTML}
+                            </div>
                         </div>
                         <div class="service-price">${precoObservacaoHTML} R$ ${preco}</div>
                     </div>
                 `;
+                
                 container.innerHTML += itemHTML;
             });
         };
@@ -108,9 +126,8 @@ async function carregarServicos() {
         const limpezasGrid = document.getElementById('limpezas-grid');
         const limpezasOutrosGrid = document.getElementById('limpezas-outros-grid');
         
-        // Separa as limpezas de tênis das outras
-        const limpezasTenis = categorias.limpezas.filter(s => !s.fields.nomeDoServico.toLowerCase().includes('boné') && !s.fields.nomeDoServico.toLowerCase().includes('slides'));
-        const limpezasOutros = categorias.limpezas.filter(s => s.fields.nomeDoServico.toLowerCase().includes('boné') || s.fields.nomeDoServico.toLowerCase().includes('slides'));
+        const limpezasTenis = categorias.limpezas.filter(s => !s.fields.nomeDoServico.toLowerCase().includes('boné') && !s.fields.nomeDoServico.toLowerCase().includes('slides') && !s.fields.nomeDoServico.toLowerCase().includes('bolsas'));
+        const limpezasOutros = categorias.limpezas.filter(s => s.fields.nomeDoServico.toLowerCase().includes('boné') || s.fields.nomeDoServico.toLowerCase().includes('slides') || s.fields.nomeDoServico.toLowerCase().includes('bolsas'));
         
         renderizarServicos(limpezasTenis, limpezasGrid);
         renderizarServicos(limpezasOutros, limpezasOutrosGrid);
@@ -125,22 +142,22 @@ async function carregarServicos() {
 
 
 // ##################################################################
-// # FUNÇÃO PARA BUSCAR E RENDERIZAR OS RESULTADOS NA GALERIA
+// # FUNÇÃO PARA CARREGAR RESULTADOS (GALERIA PRINCIPAL)
 // ##################################################################
 async function carregarResultados() {
+    if (!spaceId || !accessToken || spaceId === 'SEU_SPACE_ID_AQUI' || accessToken === 'SEU_ACCESS_TOKEN_AQUI') { return; }
+
     const url = `https://cdn.contentful.com/spaces/${spaceId}/environments/master/entries?access_token=${accessToken}&content_type=resultadoDaGaleria`;
 
     try {
         const response = await fetch(url);
         const data = await response.json();
         
-        if (!response.ok || !data.items) {
-            console.error("Resposta da API de Resultados com erro:", data);
-            throw new Error('Falha ao carregar os resultados da galeria ou dados inválidos.');
-        }
+        if (!response.ok || !data.items) { return; }
 
         const assets = data.includes && data.includes.Asset ? new Map(data.includes.Asset.map(asset => [asset.sys.id, asset.fields])) : new Map();
         const sliderContainer = document.getElementById('gallery-slider');
+        if (!sliderContainer) return;
         sliderContainer.innerHTML = '';
 
         data.items.forEach(item => {
@@ -148,7 +165,6 @@ async function carregarResultados() {
             if (fotoAntes && fotoDepois) {
                 const urlFotoAntes = `https:${assets.get(fotoAntes.sys.id)?.file?.url}`;
                 const urlFotoDepois = `https:${assets.get(fotoDepois.sys.id)?.file?.url}`;
-                
                 sliderContainer.innerHTML += `<img src="${urlFotoAntes}" alt="Antes" class="slide">`;
                 sliderContainer.innerHTML += `<img src="${urlFotoDepois}" alt="Depois" class="slide">`;
             }
@@ -163,7 +179,50 @@ async function carregarResultados() {
 
 
 // ##################################################################
-// # LÓGICA DO SLIDER
+// # FUNÇÃO PARA CARREGAR GALERIA DE CUSTOMIZAÇÕES
+// ##################################################################
+async function carregarCustomizacoes() {
+    if (!spaceId || !accessToken || spaceId === 'SEU_SPACE_ID_AQUI' || accessToken === 'SEU_ACCESS_TOKEN_AQUI') { return; }
+    
+    const url = `https://cdn.contentful.com/spaces/${spaceId}/environments/master/entries?access_token=${accessToken}&content_type=fotoDeCustomizacao`;
+
+    try {
+        const response = await fetch(url);
+        const data = await response.json();
+        
+        if (!response.ok || !data.items || data.items.length === 0) {
+            const customizacaoGaleria = document.getElementById('customizacao-galeria');
+            if (customizacaoGaleria) {
+                customizacaoGaleria.style.display = 'none';
+            }
+            return;
+        }
+
+        const assets = data.includes && data.includes.Asset ? new Map(data.includes.Asset.map(asset => [asset.sys.id, asset.fields])) : new Map();
+        const sliderContainer = document.getElementById('customizacao-slider');
+        if (!sliderContainer) return;
+        sliderContainer.innerHTML = '';
+
+        data.items.forEach(item => {
+            const { imagemDaCustomizacao } = item.fields;
+            if (imagemDaCustomizacao) {
+                const urlImagem = `https:${assets.get(imagemDaCustomizacao.sys.id)?.file?.url}`;
+                if (urlImagem) {
+                    sliderContainer.innerHTML += `<img src="${urlImagem}" alt="Customização" class="slide">`;
+                }
+            }
+        });
+
+        inicializarCustomizacaoSlider();
+
+    } catch (error) {
+        console.error('ERRO EM carregarCustomizacoes:', error);
+    }
+}
+
+
+// ##################################################################
+// # LÓGICA DO SLIDER PRINCIPAL (RESULTADOS)
 // ##################################################################
 function inicializarSlider() {
     slides = document.querySelectorAll('#gallery-slider .slide');
@@ -196,4 +255,46 @@ function prevSlide() {
         currentSlide = slides.length - 1;
     }
     showSlide(currentSlide);
+}
+
+
+// ##################################################################
+// # LÓGICA DO SLIDER DE CUSTOMIZAÇÕES
+// ##################################################################
+function inicializarCustomizacaoSlider() {
+    customizacaoSlides = document.querySelectorAll('#customizacao-slider .slide');
+    if (customizacaoSlides.length > 0) {
+        currentCustomizacaoSlide = 0;
+        showCustomizacaoSlide(currentCustomizacaoSlide);
+    } else {
+        const customizacaoGaleria = document.getElementById('customizacao-galeria');
+        if (customizacaoGaleria) {
+            customizacaoGaleria.style.display = 'none';
+        }
+    }
+}
+
+function showCustomizacaoSlide(index) {
+    if (customizacaoSlides.length === 0) return;
+    customizacaoSlides.forEach((slide, i) => {
+        slide.classList.toggle('active', i === index);
+    });
+}
+
+function nextCustomizacaoSlide() {
+    if (customizacaoSlides.length === 0) return;
+    currentCustomizacaoSlide++;
+    if (currentCustomizacaoSlide >= customizacaoSlides.length) {
+        currentCustomizacaoSlide = 0;
+    }
+    showCustomizacaoSlide(currentCustomizacaoSlide);
+}
+
+function prevCustomizacaoSlide() {
+    if (customizacaoSlides.length === 0) return;
+    currentCustomizacaoSlide--;
+    if (currentCustomizacaoSlide < 0) {
+        currentCustomizacaoSlide = customizacaoSlides.length - 1;
+    }
+    showCustomizacaoSlide(currentCustomizacaoSlide);
 }

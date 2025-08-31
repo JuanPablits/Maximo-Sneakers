@@ -5,7 +5,7 @@ html {
 :root {
     --background-dark: #111111;
     --primary-blue: rgba(9, 9, 121, 1);
-    --primary-accent: rgba(0, 212, 255, 1); 
+    --primary-accent: rgba(0, 212, 255, 1);
     --text-light: #f0f0f0;
     --text-dark: #333;
     --anton-font: 'Anton', sans-serif;
@@ -134,12 +134,6 @@ p {
     color: var(--text-light);
 }
 
-.pricing-container .subtitle {
-    font-size: 1.1rem;
-    color: #aaa;
-    margin-bottom: 60px;
-}
-
 .category-title {
     font-family: var(--anton-font);
     font-size: 1.8rem;
@@ -156,6 +150,7 @@ p {
     display: grid;
     grid-template-columns: 1fr;
     gap: 15px;
+    align-items: stretch; /* Garante que todos os itens tenham a mesma altura */
 }
 
 .price-item {
@@ -166,6 +161,8 @@ p {
     padding: 15px 25px;
     border-radius: 8px;
     transition: transform 0.3s ease, background-color 0.3s ease;
+    height: 100%; /* Ocupa toda a altura disponível da célula da grade */
+    box-sizing: border-box; /* Inclui padding e border na altura total */
 }
 
 .price-item:hover {
@@ -175,12 +172,23 @@ p {
 
 .service-name {
     display: flex;
-    align-items: center;
+    align-items: flex-start; /* Alinha o conteúdo ao topo */
     gap: 15px;
+    text-align: left;
+}
+
+.service-details {
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Centraliza verticalmente o texto do serviço e descrição */
+    flex-grow: 1; /* Permite que este elemento ocupe o espaço restante */
+}
+
+.service-details span:first-child {
     font-size: 1.1rem;
     font-weight: bold;
-    text-align: left;
     font-family: var(--roboto-font);
+    line-height: 1.2; /* Ajuste para evitar muito espaço entre nome e descrição */
 }
 
 .price-icon {
@@ -188,6 +196,8 @@ p {
     height: 40px;
     border-radius: 50%;
     object-fit: cover;
+    flex-shrink: 0;
+    margin-top: 2px; /* Pequeno ajuste para alinhar com o texto */
 }
 
 .service-price {
@@ -196,6 +206,10 @@ p {
     color: #fff;
     min-width: 100px;
     text-align: right;
+    display: flex; /* Para alinhar o "a partir de" */
+    flex-direction: column; /* Para empilhar "a partir de" e o preço */
+    justify-content: center; /* Centraliza verticalmente */
+    align-items: flex-end; /* Alinha o texto à direita */
 }
 
 .service-price small {
@@ -205,6 +219,7 @@ p {
     color: #ccc;
     font-weight: normal;
     margin-bottom: -5px;
+    line-height: 1; /* Ajusta a altura da linha para o "a partir de" */
 }
 
 .observation-note {
@@ -223,8 +238,17 @@ p {
     margin: 20px auto 0;
 }
 
+.special-description {
+    font-family: 'Helvetica', sans-serif;
+    font-size: 0.8rem;
+    color: #aaa;
+    font-weight: 300;
+    line-height: 1.2; /* Garante que a descrição não ocupe muito espaço vertical */
+    margin-top: 2px; /* Pequeno ajuste de espaçamento */
+}
 
-/* SPLIT SECTION (RESULTADOS) */
+
+/* SPLIT SECTION (RESULTADOS E CUSTOMIZAÇÕES) */
 .split-section {
     display: flex;
     align-items: center;
@@ -236,15 +260,25 @@ p {
     margin: 40px auto;
 }
 
+#customizacao-galeria {
+    background-color: #1c1c1c;
+    color: var(--text-light);
+}
+
+#customizacao-galeria h2 {
+    color: var(--primary-accent);
+}
+
 .text-content {
     flex: 1;
 }
 
 .text-content h2 {
-    font-family: var(--anton-font);
-    font-size: 2.8rem;
+    font-family: Helvetica, sans-serif;
+    font-size: 2.2rem;
     letter-spacing: 1px;
     margin-top: 0;
+    font-weight: bold;
     color: var(--primary-blue);
 }
 
@@ -273,40 +307,36 @@ p {
     display: block;
 }
 
-/* Estilo unificado para os botões next-btn e prev-btn */
 .next-btn, .prev-btn {
     position: absolute;
     bottom: 20px;
-    background-color: var(--primary-accent); /* O azul vibrante dos botões */
-    color: white; /* Cor da seta (agora controlada pelo fill do SVG) */
+    background-color: var(--primary-accent);
+    color: var(--background-dark);
     border: none;
     border-radius: 50%;
     width: 50px;
     height: 50px;
-    display: flex; /* Para centralizar o SVG */
-    justify-content: center; /* Centraliza horizontalmente o SVG */
-    align-items: center; /* Centraliza verticalmente o SVG */
+    display: flex;
+    justify-content: center;
+    align-items: center;
     cursor: pointer;
     transition: transform 0.3s ease, background-color 0.3s ease;
     z-index: 10;
     box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-    padding: 0; /* Remover padding padrão do botão */
+    padding: 0;
 }
 
 .next-btn:hover, .prev-btn:hover {
     transform: scale(1.1);
-    background-color: #00bfff; /* Um tom um pouco mais claro no hover */
+    background-color: #00bfff;
 }
 
-/* Estilo para os ícones SVG dentro dos botões */
 .arrow-icon {
-    width: 24px; 
+    width: 24px;
     height: 24px;
-    display: block; 
+    display: block;
 }
 
-
-/* Posições específicas para cada botão */
 .next-btn {
     right: 20px;
 }
@@ -422,9 +452,8 @@ p {
 }
 
 .social-icon img {
-    width: 80px;
-    height: 80px;
-    filter: invert(1);
+    width: 100px;
+    height: 100px;
 }
 
 
@@ -525,8 +554,11 @@ p {
     .pricing-grid.smaller-items {
         max-width: 100%;
     }
+    .special-description {
+        font-size: 0.75rem;
+    }
 
-    /* SPLIT SECTION (RESULTADOS) */
+    /* SPLIT SECTION (RESULTADOS E CUSTOMIZAÇÕES) */
     .split-section {
         flex-direction: column;
         padding: 40px 20px;
@@ -539,8 +571,8 @@ p {
     .text-content h2 {
         font-size: 2rem;
     }
-    .text-content p {
-        font-size: 1rem;
+    #customizacao-galeria h2 {
+        font-size: 2rem;
     }
     .image-gallery {
         width: 100%;
@@ -550,7 +582,6 @@ p {
     .next-btn, .prev-btn {
         width: 40px;
         height: 40px;
-        font-size: 20px;
         bottom: 10px;
     }
     .next-btn {
@@ -558,6 +589,10 @@ p {
     }
     .prev-btn {
         left: 10px;
+    }
+    .arrow-icon {
+        width: 20px;
+        height: 20px;
     }
 
     /* COMO FUNCIONA */
