@@ -8,7 +8,6 @@ const accessToken = 'knsoFyXohlck3hu9veCzUctMXWK74f4sVnNsLZEz1EI';
 let slides = [];
 let currentSlide = 0;
 
-
 // ##################################################################
 // # FUNÇÃO PRINCIPAL QUE RODA QUANDO A PÁGINA CARREGA
 // ##################################################################
@@ -17,12 +16,11 @@ document.addEventListener('DOMContentLoaded', () => {
     carregarResultados();
 });
 
-
 // ##################################################################
 // # FUNÇÃO PARA BUSCAR E RENDERIZAR OS SERVIÇOS E PREÇOS
 // ##################################################################
 async function carregarServicos() {
-    const url = `https://cdn.contentful.com/spaces/${spaceId}/environments/master/entries?access_token=${accessToken}&content_type=servico&order=fields.preco`;
+    const url = `https://cdn.contentful.com/spaces/${spaceId}/environments/master/entries?access_token=${accessToken}&content_type=servico`;
     
     try {
         const response = await fetch(url);
@@ -35,55 +33,90 @@ async function carregarServicos() {
         
         const assets = data.includes && data.includes.Asset ? new Map(data.includes.Asset.map(asset => [asset.sys.id, asset.fields])) : new Map();
 
-        // Seleciona os containers no HTML
-        const limpezasGrid = document.getElementById('limpezas-grid');
-        const limpezasOutrosGrid = document.getElementById('limpezas-outros-grid');
-        const restauracoesGrid = document.getElementById('restauracoes-grid');
-        const customizacoesGrid = document.getElementById('customizacoes-grid'); // Antigo 'extras-grid'
-        const extrasGrid = document.getElementById('extras-grid'); // Novo grid
+        // --- NOVA LÓGICA DE ORGANIZAÇÃO ---
 
-        // Limpa os containers
-        limpezasGrid.innerHTML = '';
-        limpezasOutrosGrid.innerHTML = '';
-        restauracoesGrid.innerHTML = '';
-        customizacoesGrid.innerHTML = '';
-        extrasGrid.innerHTML = '';
+        // 1. SEPARA OS SERVIÇOS EM ARRAYS POR CATEGORIA
+        const categorias = {
+            limpezas: [],
+            restauracoes: [],
+            customizacoes: [],
+            extras: []
+        };
 
         data.items.forEach(item => {
-            const { nomeDoServico, preco, observacaoDoPreco, categoria, icone } = item.fields;
-            const urlIcone = icone ? `https:${assets.get(icone.sys.id)?.file?.url}` : 'img/placeholder.png';
-            const precoObservacaoHTML = observacaoDoPreco ? `<small>${observacaoDoPreco}</small>` : '';
-
-            const itemHTML = `
-                <div class="price-item">
-                    <div class="service-name">
-                        <img src="${urlIcone}" alt="Ícone de ${nomeDoServico}" class="price-icon">
-                        <span>${nomeDoServico.toUpperCase()}</span>
-                    </div>
-                    <div class="service-price">${precoObservacaoHTML} R$ ${preco}</div>
-                </div>
-            `;
-            
-            // Lógica atualizada para as novas categorias
-            switch (categoria) {
+            switch (item.fields.categoria) {
                 case 'Limpezas':
-                    if (nomeDoServico.toLowerCase().includes('boné') || nomeDoServico.toLowerCase().includes('slides')) {
-                        limpezasOutrosGrid.innerHTML += itemHTML;
-                    } else {
-                        limpezasGrid.innerHTML += itemHTML;
-                    }
+                    categorias.limpezas.push(item);
                     break;
                 case 'Restaurações e Pinturas':
-                    restauracoesGrid.innerHTML += itemHTML;
+                    categorias.restauracoes.push(item);
                     break;
                 case 'Customizações':
-                    customizacoesGrid.innerHTML += itemHTML;
+                    categorias.customizacoes.push(item);
                     break;
                 case 'Serviços Extras':
-                    extrasGrid.innerHTML += itemHTML;
+                    categorias.extras.push(item);
                     break;
             }
         });
+
+        // 2. ORDENA CADA CATEGORIA INDIVIDUALMENTE
+        
+        // Ordena Limpezas por prioridade de nome
+        categorias.limpezas.sort((a, b) => {
+            const nameA = a.fields.nomeDoServico.toLowerCase();
+            const nameB = b.fields.nomeDoServico.toLowerCase();
+            const priority = (name) => {
+                if (name.startsWith('limpeza 1')) return 1;
+                if (name.startsWith('limpeza 2')) return 2;
+                if (name.startsWith('limpeza 3')) return 3;
+                if (name.startsWith('limpeza exclusive')) return 4;
+                return 5;
+            };
+            return priority(nameA) - priority(nameB) || a.fields.preco - b.fields.preco;
+        });
+
+        // Ordena Restaurações pelo campo "Ordem de Exibição"
+        categorias.restauracoes.sort((a, b) => (a.fields.ordemDeExibicao || 99) - (b.fields.ordemDeExibicao || 99));
+
+        // Ordena Customizações e Extras por preço
+        categorias.customizacoes.sort((a, b) => a.fields.preco - b.fields.preco);
+        categorias.extras.sort((a, b) => a.fields.preco - b.fields.preco);
+
+
+        // 3. RENDERIZA CADA CATEGORIA NO SEU DEVIDO LUGAR
+        const renderizarServicos = (servicos, container) => {
+            container.innerHTML = ''; // Limpa o container primeiro
+            servicos.forEach(item => {
+                const { nomeDoServico, preco, observacaoDoPreco, icone } = item.fields;
+                const urlIcone = icone ? `https:${assets.get(icone.sys.id)?.file?.url}` : 'img/placeholder.png';
+                const precoObservacaoHTML = observacaoDoPreco ? `<small>${observacaoDoPreco}</small>` : '';
+
+                const itemHTML = `
+                    <div class="price-item">
+                        <div class="service-name">
+                            <img src="${urlIcone}" alt="Ícone de ${nomeDoServico}" class="price-icon">
+                            <span>${nomeDoServico.toUpperCase()}</span>
+                        </div>
+                        <div class="service-price">${precoObservacaoHTML} R$ ${preco}</div>
+                    </div>
+                `;
+                container.innerHTML += itemHTML;
+            });
+        };
+
+        const limpezasGrid = document.getElementById('limpezas-grid');
+        const limpezasOutrosGrid = document.getElementById('limpezas-outros-grid');
+        
+        // Separa as limpezas de tênis das outras
+        const limpezasTenis = categorias.limpezas.filter(s => !s.fields.nomeDoServico.toLowerCase().includes('boné') && !s.fields.nomeDoServico.toLowerCase().includes('slides'));
+        const limpezasOutros = categorias.limpezas.filter(s => s.fields.nomeDoServico.toLowerCase().includes('boné') || s.fields.nomeDoServico.toLowerCase().includes('slides'));
+        
+        renderizarServicos(limpezasTenis, limpezasGrid);
+        renderizarServicos(limpezasOutros, limpezasOutrosGrid);
+        renderizarServicos(categorias.restauracoes, document.getElementById('restauracoes-grid'));
+        renderizarServicos(categorias.customizacoes, document.getElementById('customizacoes-grid'));
+        renderizarServicos(categorias.extras, document.getElementById('extras-grid'));
 
     } catch (error) {
         console.error('ERRO EM carregarServicos:', error);
