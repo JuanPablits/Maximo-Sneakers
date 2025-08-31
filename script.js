@@ -8,6 +8,7 @@ const accessToken = 'knsoFyXohlck3hu9veCzUctMXWK74f4sVnNsLZEz1EI';
 let slides = [];
 let currentSlide = 0;
 
+
 // ##################################################################
 // # FUNÇÃO PRINCIPAL QUE RODA QUANDO A PÁGINA CARREGA
 // ##################################################################
@@ -16,11 +17,11 @@ document.addEventListener('DOMContentLoaded', () => {
     carregarResultados();
 });
 
+
 // ##################################################################
 // # FUNÇÃO PARA BUSCAR E RENDERIZAR OS SERVIÇOS E PREÇOS
 // ##################################################################
 async function carregarServicos() {
-    
     const url = `https://cdn.contentful.com/spaces/${spaceId}/environments/master/entries?access_token=${accessToken}&content_type=servico&order=fields.preco`;
     
     try {
@@ -34,14 +35,18 @@ async function carregarServicos() {
         
         const assets = data.includes && data.includes.Asset ? new Map(data.includes.Asset.map(asset => [asset.sys.id, asset.fields])) : new Map();
 
+        // Seleciona os containers no HTML
         const limpezasGrid = document.getElementById('limpezas-grid');
         const limpezasOutrosGrid = document.getElementById('limpezas-outros-grid');
         const restauracoesGrid = document.getElementById('restauracoes-grid');
-        const extrasGrid = document.getElementById('extras-grid');
+        const customizacoesGrid = document.getElementById('customizacoes-grid'); // Antigo 'extras-grid'
+        const extrasGrid = document.getElementById('extras-grid'); // Novo grid
 
+        // Limpa os containers
         limpezasGrid.innerHTML = '';
         limpezasOutrosGrid.innerHTML = '';
         restauracoesGrid.innerHTML = '';
+        customizacoesGrid.innerHTML = '';
         extrasGrid.innerHTML = '';
 
         data.items.forEach(item => {
@@ -59,6 +64,7 @@ async function carregarServicos() {
                 </div>
             `;
             
+            // Lógica atualizada para as novas categorias
             switch (categoria) {
                 case 'Limpezas':
                     if (nomeDoServico.toLowerCase().includes('boné') || nomeDoServico.toLowerCase().includes('slides')) {
@@ -67,8 +73,11 @@ async function carregarServicos() {
                         limpezasGrid.innerHTML += itemHTML;
                     }
                     break;
-                case 'Restaurações':
+                case 'Restaurações e Pinturas':
                     restauracoesGrid.innerHTML += itemHTML;
+                    break;
+                case 'Customizações':
+                    customizacoesGrid.innerHTML += itemHTML;
                     break;
                 case 'Serviços Extras':
                     extrasGrid.innerHTML += itemHTML;
@@ -80,6 +89,7 @@ async function carregarServicos() {
         console.error('ERRO EM carregarServicos:', error);
     }
 }
+
 
 // ##################################################################
 // # FUNÇÃO PARA BUSCAR E RENDERIZAR OS RESULTADOS NA GALERIA
@@ -117,6 +127,7 @@ async function carregarResultados() {
         console.error('ERRO EM carregarResultados:', error);
     }
 }
+
 
 // ##################################################################
 // # LÓGICA DO SLIDER
