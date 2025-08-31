@@ -233,10 +233,7 @@ p {
     color: #ddd;
 }
 
-.pricing-grid.smaller-items {
-    max-width: 600px;
-    margin: 20px auto 0;
-}
+
 
 .special-description {
     font-family: 'Helvetica', sans-serif;
@@ -470,14 +467,7 @@ p {
 /* ### AJUSTES DE RESPONSIVIDADE ### */
 /* ################################# */
 
-@media (min-width: 769px) {
-    .pricing-grid {
-        grid-template-columns: 1fr 1fr;
-    }
-    .pricing-grid.smaller-items {
-       grid-template-columns: 1fr 1fr;
-    }
-}
+
 
 @media (max-width: 768px) {
     /* HEADER */
