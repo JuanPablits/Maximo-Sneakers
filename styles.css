@@ -126,6 +126,14 @@ p {
     text-align: center;
 }
 
+.pricing-container h2 {
+    font-family: var(--anton-font);
+    font-size: 2.8rem;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+    color: var(--text-light);
+}
+
 .category-title {
     font-family: var(--anton-font);
     font-size: 1.8rem;
@@ -142,20 +150,19 @@ p {
     display: grid;
     grid-template-columns: 1fr;
     gap: 15px;
-    align-items: stretch;
+    align-items: stretch; /* Garante que todos os itens tenham a mesma altura */
 }
 
 .price-item {
     display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
+    justify-content: space-between;
+    align-items: center;
     background-color: #2b2b2b;
-    padding: 20px 25px;
+    padding: 15px 25px;
     border-radius: 8px;
     transition: transform 0.3s ease, background-color 0.3s ease;
-    height: 100%;
-    box-sizing: border-box;
-    text-align: left;
+    height: 100%; /* Ocupa toda a altura disponível da célula da grade */
+    box-sizing: border-box; /* Inclui padding e border na altura total */
 }
 
 .price-item:hover {
@@ -165,20 +172,23 @@ p {
 
 .service-name {
     display: flex;
-    align-items: center;
+    align-items: flex-start; /* Alinha o conteúdo ao topo */
     gap: 15px;
-    width: 100%;
+    text-align: left;
 }
 
 .service-details {
     display: flex;
     flex-direction: column;
+    justify-content: center; /* Centraliza verticalmente o texto do serviço e descrição */
+    flex-grow: 1; /* Permite que este elemento ocupe o espaço restante */
 }
 
 .service-details span:first-child {
     font-size: 1.1rem;
     font-weight: bold;
     font-family: var(--roboto-font);
+    line-height: 1.2; /* Ajuste para evitar muito espaço entre nome e descrição */
 }
 
 .price-icon {
@@ -187,16 +197,19 @@ p {
     border-radius: 50%;
     object-fit: cover;
     flex-shrink: 0;
+    margin-top: 2px; /* Pequeno ajuste para alinhar com o texto */
 }
 
 .service-price {
     font-family: var(--anton-font);
     font-size: 1.7rem;
     color: #fff;
+    min-width: 100px;
     text-align: right;
-    width: 100%;
-    margin-top: auto;
-    padding-top: 10px;
+    display: flex; /* Para alinhar o "a partir de" */
+    flex-direction: column; /* Para empilhar "a partir de" e o preço */
+    justify-content: center; /* Centraliza verticalmente */
+    align-items: flex-end; /* Alinha o texto à direita */
 }
 
 .service-price small {
@@ -206,6 +219,7 @@ p {
     color: #ccc;
     font-weight: normal;
     margin-bottom: -5px;
+    line-height: 1; /* Ajusta a altura da linha para o "a partir de" */
 }
 
 .observation-note {
@@ -219,60 +233,51 @@ p {
     color: #ddd;
 }
 
+
+
 .special-description {
     font-family: 'Helvetica', sans-serif;
     font-size: 0.8rem;
     color: #aaa;
     font-weight: 300;
-    text-align: left;
-    margin-top: 4px;
+    line-height: 1.2; /* Garante que a descrição não ocupe muito espaço vertical */
+    margin-top: 2px; /* Pequeno ajuste de espaçamento */
 }
 
 
-/* SPLIT SECTION (BASE) */
+/* SPLIT SECTION (RESULTADOS E CUSTOMIZAÇÕES) */
 .split-section {
     display: flex;
     align-items: center;
+    background-color: #fff;
+    color: var(--text-dark);
     padding: 80px 5%;
     gap: 40px;
     max-width: 1200px;
     margin: 40px auto;
 }
 
-.text-content {
-    flex: 1;
-}
-
-/* Estilo para a seção de fundo escuro (Customizações) */
 #customizacao-galeria {
     background-color: #1c1c1c;
     color: var(--text-light);
 }
 
-#customizacao-galeria .text-content h2 {
-    font-family: Helvetica, sans-serif;
-    font-size: 2.2rem;
-    letter-spacing: 1px;
-    margin-top: 0;
-    font-weight: bold; /* Peso 700 */
+#customizacao-galeria h2 {
     color: var(--primary-accent);
 }
 
-/* Estilo para a seção de fundo branco (Resultados) */
-#transformacao {
-    background-color: #fff;
-    color: var(--text-dark);
+.text-content {
+    flex: 1;
 }
 
-#transformacao .text-content h2 {
+.text-content h2, h1 {
     font-family: Helvetica, sans-serif;
     font-size: 2.2rem;
     letter-spacing: 1px;
     margin-top: 0;
-    font-weight: 900; /* Peso 900 (MAIS GROSSO) para compensar o efeito ótico */
+    font-weight: 900;
     color: var(--primary-blue);
 }
-
 
 .image-gallery {
     flex: 1;
@@ -444,8 +449,8 @@ p {
 }
 
 .social-icon img {
-    width: 30px;
-    height: 30px;
+    width: 100px;
+    height: 100px;
 }
 
 
@@ -462,11 +467,7 @@ p {
 /* ### AJUSTES DE RESPONSIVIDADE ### */
 /* ################################# */
 
-@media (min-width: 769px) {
-    .pricing-grid {
-        grid-template-columns: 1fr 1fr;
-    }
-}
+
 
 @media (max-width: 768px) {
     /* HEADER */
@@ -502,6 +503,13 @@ p {
     .pricing-section {
         padding: 40px 20px;
     }
+    .pricing-container h2 {
+        font-size: 2.2rem;
+    }
+    .pricing-container .subtitle {
+        font-size: 0.95rem;
+        margin-bottom: 30px;
+    }
     .category-title {
         font-size: 1.5rem;
         margin-top: 30px;
@@ -533,6 +541,9 @@ p {
         padding: 10px;
         margin: 15px 0;
     }
+    .pricing-grid.smaller-items {
+        max-width: 100%;
+    }
     .special-description {
         font-size: 0.75rem;
     }
@@ -547,7 +558,10 @@ p {
         text-align: center;
         margin-bottom: 30px;
     }
-    .text-content h2, #customizacao-galeria .text-content h2 {
+    .text-content h2 {
+        font-size: 2rem;
+    }
+    #customizacao-galeria h2 {
         font-size: 2rem;
     }
     .image-gallery {
