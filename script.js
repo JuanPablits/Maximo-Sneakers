@@ -9,6 +9,8 @@ let slides = [];
 let currentSlide = 0;
 let customizacaoSlides = [];
 let currentCustomizacaoSlide = 0;
+let feedbackSlides = [];
+let currentFeedbackSlide = 0;
 
 // ##################################################################
 // # FUNÇÃO PRINCIPAL
@@ -17,26 +19,15 @@ document.addEventListener('DOMContentLoaded', () => {
     carregarServicos();
     carregarResultados();
     carregarCustomizacoes();
+    carregarFeedbacks();
 });
 
 // ##################################################################
 // # FUNÇÃO PARA CARREGAR SERVIÇOS
 // ##################################################################
 async function carregarServicos() {
-    // Verificação de chaves
     if (!spaceId || !accessToken || spaceId === 'SEU_SPACE_ID_AQUI' || accessToken === 'SEU_ACCESS_TOKEN_AQUI') {
-        console.error('ERRO: As chaves do Contentful (spaceId ou accessToken) não foram configuradas corretamente no script.js.');
-        const servicosContainer = document.getElementById('servicos');
-        if (servicosContainer) {
-            servicosContainer.innerHTML = `
-            <div style="text-align: center; padding: 50px; background-color: #333; color: #ff6347; border-radius: 8px; margin: 20px auto; max-width: 600px;">
-                <h2>Erro de Configuração</h2>
-                <p>Por favor, insira suas chaves <code>spaceId</code> e <code>accessToken</code> do Contentful no arquivo <code>script.js</code>.</p>
-                <p>Sem essas chaves, não é possível carregar os serviços e conteúdos dinâmicos.</p>
-            </div>
-        `;
-        }
-        return;
+        return; // Apenas para, o erro é tratado na função carregarResultados
     }
 
     const url = `https://cdn.contentful.com/spaces/${spaceId}/environments/master/entries?access_token=${accessToken}&content_type=servico`;
@@ -126,8 +117,8 @@ async function carregarServicos() {
         const limpezasGrid = document.getElementById('limpezas-grid');
         const limpezasOutrosGrid = document.getElementById('limpezas-outros-grid');
         
-        const limpezasTenis = categorias.limpezas.filter(s => !s.fields.nomeDoServico.toLowerCase().includes('boné') && !s.fields.nomeDoServico.toLowerCase().includes('slides') && !s.fields.nomeDoServico.toLowerCase().includes('bolsas'));
-        const limpezasOutros = categorias.limpezas.filter(s => s.fields.nomeDoServico.toLowerCase().includes('boné') || s.fields.nomeDoServico.toLowerCase().includes('slides') || s.fields.nomeDoServico.toLowerCase().includes('bolsas'));
+        const limpezasTenis = categorias.limpezas.filter(s => !s.fields.nomeDoServico.toLowerCase().includes('boné') && !s.fields.nomeDoServico.toLowerCase().includes('slides'));
+        const limpezasOutros = categorias.limpezas.filter(s => s.fields.nomeDoServico.toLowerCase().includes('boné') || s.fields.nomeDoServico.toLowerCase().includes('slides'));
         
         renderizarServicos(limpezasTenis, limpezasGrid);
         renderizarServicos(limpezasOutros, limpezasOutrosGrid);
@@ -145,7 +136,19 @@ async function carregarServicos() {
 // # FUNÇÃO PARA CARREGAR RESULTADOS (GALERIA PRINCIPAL)
 // ##################################################################
 async function carregarResultados() {
-    if (!spaceId || !accessToken || spaceId === 'SEU_SPACE_ID_AQUI' || accessToken === 'SEU_ACCESS_TOKEN_AQUI') { return; }
+    if (!spaceId || !accessToken || spaceId === 'SEU_SPACE_ID_AQUI' || accessToken === 'SEU_ACCESS_TOKEN_AQUI') {
+        const servicosContainer = document.getElementById('servicos');
+        if (servicosContainer) {
+            servicosContainer.innerHTML = `
+            <div style="text-align: center; padding: 50px; background-color: #333; color: #ff6347; border-radius: 8px; margin: 20px auto; max-width: 600px;">
+                <h2>Erro de Configuração</h2>
+                <p>Por favor, insira suas chaves <code>spaceId</code> e <code>accessToken</code> do Contentful no arquivo <code>script.js</code>.</p>
+                <p>Sem essas chaves, não é possível carregar os serviços e conteúdos dinâmicos.</p>
+            </div>
+        `;
+        }
+        return;
+    }
 
     const url = `https://cdn.contentful.com/spaces/${spaceId}/environments/master/entries?access_token=${accessToken}&content_type=resultadoDaGaleria`;
 
@@ -192,9 +195,7 @@ async function carregarCustomizacoes() {
         
         if (!response.ok || !data.items || data.items.length === 0) {
             const customizacaoGaleria = document.getElementById('customizacao-galeria');
-            if (customizacaoGaleria) {
-                customizacaoGaleria.style.display = 'none';
-            }
+            if (customizacaoGaleria) customizacaoGaleria.style.display = 'none';
             return;
         }
 
@@ -217,6 +218,44 @@ async function carregarCustomizacoes() {
 
     } catch (error) {
         console.error('ERRO EM carregarCustomizacoes:', error);
+    }
+}
+
+// ##################################################################
+// # FUNÇÃO PARA CARREGAR FEEDBACKS
+// ##################################################################
+async function carregarFeedbacks() {
+    if (!spaceId || !accessToken || spaceId === 'SEU_SPACE_ID_AQUI' || accessToken === 'SEU_ACCESS_TOKEN_AQUI') { return; }
+    
+    const url = `https://cdn.contentful.com/spaces/${spaceId}/environments/master/entries?access_token=${accessToken}&content_type=printDeFeedback`;
+
+    try {
+        const response = await fetch(url);
+        const data = await response.json();
+        
+        if (!response.ok || !data.items || data.items.length === 0) {
+            const feedbacksSection = document.getElementById('feedbacks');
+            if (feedbacksSection) feedbacksSection.style.display = 'none';
+            return;
+        }
+
+        const assets = data.includes && data.includes.Asset ? new Map(data.includes.Asset.map(asset => [asset.sys.id, asset.fields])) : new Map();
+        const sliderContainer = document.getElementById('feedbacks-slider');
+        if (!sliderContainer) return;
+        sliderContainer.innerHTML = '';
+
+        data.items.forEach(item => {
+            const { imagemDoPrint } = item.fields;
+            if (imagemDoPrint) {
+                const urlImagem = `https:${assets.get(imagemDoPrint.sys.id)?.file?.url}`;
+                sliderContainer.innerHTML += `<img src="${urlImagem}" alt="Feedback de cliente" class="slide">`;
+            }
+        });
+
+        inicializarFeedbackSlider();
+
+    } catch (error) {
+        console.error('ERRO EM carregarFeedbacks:', error);
     }
 }
 
@@ -297,4 +336,45 @@ function prevCustomizacaoSlide() {
         currentCustomizacaoSlide = customizacaoSlides.length - 1;
     }
     showCustomizacaoSlide(currentCustomizacaoSlide);
+}
+
+// ##################################################################
+// # LÓGICA DO SLIDER DE FEEDBACKS
+// ##################################################################
+function inicializarFeedbackSlider() {
+    feedbackSlides = document.querySelectorAll('#feedbacks-slider .slide');
+    if (feedbackSlides.length > 0) {
+        currentFeedbackSlide = 0;
+        showFeedbackSlide(currentFeedbackSlide);
+    } else {
+        const feedbacksSection = document.getElementById('feedbacks');
+        if (feedbacksSection) {
+            feedbacksSection.style.display = 'none';
+        }
+    }
+}
+
+function showFeedbackSlide(index) {
+    if (feedbackSlides.length === 0) return;
+    feedbackSlides.forEach((slide, i) => {
+        slide.classList.toggle('active', i === index);
+    });
+}
+
+function nextFeedbackSlide() {
+    if (feedbackSlides.length === 0) return;
+    currentFeedbackSlide++;
+    if (currentFeedbackSlide >= feedbackSlides.length) {
+        currentFeedbackSlide = 0;
+    }
+    showFeedbackSlide(currentFeedbackSlide);
+}
+
+function prevFeedbackSlide() {
+    if (feedbackSlides.length === 0) return;
+    currentFeedbackSlide--;
+    if (currentFeedbackSlide < 0) {
+        currentFeedbackSlide = feedbackSlides.length - 1;
+    }
+    showFeedbackSlide(currentFeedbackSlide);
 }

@@ -114,7 +114,7 @@ p {
 }
 
 
-/* SEÇÃO DE PREÇOS */
+/* SEÇÃO DE PREÇOS (REVERTIDO AO SEU CÓDIGO ORIGINAL) */
 .pricing-section {
     padding: 80px 5%;
     background-color: #1c1c1c;
@@ -150,7 +150,7 @@ p {
     display: grid;
     grid-template-columns: 1fr;
     gap: 15px;
-    align-items: stretch; /* Garante que todos os itens tenham a mesma altura */
+    align-items: stretch;
 }
 
 .price-item {
@@ -161,8 +161,8 @@ p {
     padding: 15px 25px;
     border-radius: 8px;
     transition: transform 0.3s ease, background-color 0.3s ease;
-    height: 100%; /* Ocupa toda a altura disponível da célula da grade */
-    box-sizing: border-box; /* Inclui padding e border na altura total */
+    height: 100%;
+    box-sizing: border-box;
 }
 
 .price-item:hover {
@@ -172,7 +172,7 @@ p {
 
 .service-name {
     display: flex;
-    align-items: flex-start; /* Alinha o conteúdo ao topo */
+    align-items: flex-start;
     gap: 15px;
     text-align: left;
 }
@@ -180,15 +180,15 @@ p {
 .service-details {
     display: flex;
     flex-direction: column;
-    justify-content: center; /* Centraliza verticalmente o texto do serviço e descrição */
-    flex-grow: 1; /* Permite que este elemento ocupe o espaço restante */
+    justify-content: center;
+    flex-grow: 1;
 }
 
 .service-details span:first-child {
     font-size: 1.1rem;
     font-weight: bold;
     font-family: var(--roboto-font);
-    line-height: 1.2; /* Ajuste para evitar muito espaço entre nome e descrição */
+    line-height: 1.2;
 }
 
 .price-icon {
@@ -197,7 +197,7 @@ p {
     border-radius: 50%;
     object-fit: cover;
     flex-shrink: 0;
-    margin-top: 2px; /* Pequeno ajuste para alinhar com o texto */
+    margin-top: 2px;
 }
 
 .service-price {
@@ -206,10 +206,10 @@ p {
     color: #fff;
     min-width: 100px;
     text-align: right;
-    display: flex; /* Para alinhar o "a partir de" */
-    flex-direction: column; /* Para empilhar "a partir de" e o preço */
-    justify-content: center; /* Centraliza verticalmente */
-    align-items: flex-end; /* Alinha o texto à direita */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-end;
 }
 
 .service-price small {
@@ -219,7 +219,7 @@ p {
     color: #ccc;
     font-weight: normal;
     margin-bottom: -5px;
-    line-height: 1; /* Ajusta a altura da linha para o "a partir de" */
+    line-height: 1;
 }
 
 .observation-note {
@@ -233,15 +233,13 @@ p {
     color: #ddd;
 }
 
-
-
 .special-description {
     font-family: 'Helvetica', sans-serif;
     font-size: 0.8rem;
     color: #aaa;
     font-weight: 300;
-    line-height: 1.2; /* Garante que a descrição não ocupe muito espaço vertical */
-    margin-top: 2px; /* Pequeno ajuste de espaçamento */
+    line-height: 1.2;
+    margin-top: 2px;
 }
 
 
@@ -389,6 +387,27 @@ p {
 }
 
 
+/* ##### ESTILO DA SEÇÃO DE FEEDBACKS (ÚNICA ADIÇÃO) ##### */
+#feedbacks {
+    background-color: #1c1c1c;
+    color: var(--text-light);
+}
+
+#feedbacks .text-content h2 {
+    font-family: Helvetica, sans-serif;
+    font-size: 2.2rem;
+    letter-spacing: 1px;
+    margin-top: 0;
+    font-weight: bold;
+    color: var(--primary-accent);
+}
+
+#feedbacks-slider .slide {
+    object-fit: contain;
+    background-color: #000;
+}
+
+
 /* CONTATO */
 .contact-section {
     padding: 80px 5%;
@@ -449,7 +468,7 @@ p {
 }
 
 .social-icon img {
-    width: 100px;
+    width: 100px; /* REVERTIDO PARA SEU TAMANHO ORIGINAL */
     height: 100px;
 }
 
@@ -484,7 +503,11 @@ p {
 /* ### AJUSTES DE RESPONSIVIDADE ### */
 /* ################################# */
 
-
+@media (min-width: 769px) {
+    .pricing-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
 
 @media (max-width: 768px) {
     /* HEADER */
@@ -520,13 +543,6 @@ p {
     .pricing-section {
         padding: 40px 20px;
     }
-    .pricing-container h2 {
-        font-size: 2.2rem;
-    }
-    .pricing-container .subtitle {
-        font-size: 0.95rem;
-        margin-bottom: 30px;
-    }
     .category-title {
         font-size: 1.5rem;
         margin-top: 30px;
@@ -558,14 +574,11 @@ p {
         padding: 10px;
         margin: 15px 0;
     }
-    .pricing-grid.smaller-items {
-        max-width: 100%;
-    }
     .special-description {
         font-size: 0.75rem;
     }
 
-    /* SPLIT SECTION (RESULTADOS E CUSTOMIZAÇÕES) */
+    /* SPLIT SECTION (RESULTADOS, CUSTOMIZAÇÕES E FEEDBACKS) */
     .split-section {
         flex-direction: column;
         padding: 40px 20px;
@@ -575,10 +588,7 @@ p {
         text-align: center;
         margin-bottom: 30px;
     }
-    .text-content h2 {
-        font-size: 2rem;
-    }
-    #customizacao-galeria h2 {
+    .text-content h2, #customizacao-galeria .text-content h2, #feedbacks .text-content h2 {
         font-size: 2rem;
     }
     .image-gallery {
@@ -602,7 +612,7 @@ p {
         height: 20px;
     }
 
-    /* COMO FUNCIONA */
+    /* HOW IT WORKS */
     .how-it-works-section {
         padding: 40px 20px;
     }
