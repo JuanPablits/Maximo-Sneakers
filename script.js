@@ -27,7 +27,17 @@ document.addEventListener('DOMContentLoaded', () => {
 // ##################################################################
 async function carregarServicos() {
     if (!spaceId || !accessToken || spaceId === 'SEU_SPACE_ID_AQUI' || accessToken === 'SEU_ACCESS_TOKEN_AQUI') {
-        return; // Apenas para, o erro é tratado na função carregarResultados
+        const servicosContainer = document.getElementById('servicos');
+        if (servicosContainer) {
+            servicosContainer.innerHTML = `
+            <div style="text-align: center; padding: 50px; background-color: #333; color: #ff6347; border-radius: 8px; margin: 20px auto; max-width: 600px;">
+                <h2>Erro de Configuração</h2>
+                <p>Por favor, insira suas chaves <code>spaceId</code> e <code>accessToken</code> do Contentful no arquivo <code>script.js</code>.</p>
+                <p>Sem essas chaves, não é possível carregar os serviços e conteúdos dinâmicos.</p>
+            </div>
+        `;
+        }
+        return;
     }
 
     const url = `https://cdn.contentful.com/spaces/${spaceId}/environments/master/entries?access_token=${accessToken}&content_type=servico`;
@@ -117,8 +127,9 @@ async function carregarServicos() {
         const limpezasGrid = document.getElementById('limpezas-grid');
         const limpezasOutrosGrid = document.getElementById('limpezas-outros-grid');
         
-        const limpezasTenis = categorias.limpezas.filter(s => !s.fields.nomeDoServico.toLowerCase().includes('boné') && !s.fields.nomeDoServico.toLowerCase().includes('slides'));
-        const limpezasOutros = categorias.limpezas.filter(s => s.fields.nomeDoServico.toLowerCase().includes('boné') || s.fields.nomeDoServico.toLowerCase().includes('slides'));
+        // ##### CORREÇÃO APLICADA AQUI #####
+        const limpezasTenis = categorias.limpezas.filter(s => !s.fields.nomeDoServico.toLowerCase().includes('boné') && !s.fields.nomeDoServico.toLowerCase().includes('slides') && !s.fields.nomeDoServico.toLowerCase().includes('bolsas'));
+        const limpezasOutros = categorias.limpezas.filter(s => s.fields.nomeDoServico.toLowerCase().includes('boné') || s.fields.nomeDoServico.toLowerCase().includes('slides') || s.fields.nomeDoServico.toLowerCase().includes('bolsas'));
         
         renderizarServicos(limpezasTenis, limpezasGrid);
         renderizarServicos(limpezasOutros, limpezasOutrosGrid);
@@ -136,19 +147,7 @@ async function carregarServicos() {
 // # FUNÇÃO PARA CARREGAR RESULTADOS (GALERIA PRINCIPAL)
 // ##################################################################
 async function carregarResultados() {
-    if (!spaceId || !accessToken || spaceId === 'SEU_SPACE_ID_AQUI' || accessToken === 'SEU_ACCESS_TOKEN_AQUI') {
-        const servicosContainer = document.getElementById('servicos');
-        if (servicosContainer) {
-            servicosContainer.innerHTML = `
-            <div style="text-align: center; padding: 50px; background-color: #333; color: #ff6347; border-radius: 8px; margin: 20px auto; max-width: 600px;">
-                <h2>Erro de Configuração</h2>
-                <p>Por favor, insira suas chaves <code>spaceId</code> e <code>accessToken</code> do Contentful no arquivo <code>script.js</code>.</p>
-                <p>Sem essas chaves, não é possível carregar os serviços e conteúdos dinâmicos.</p>
-            </div>
-        `;
-        }
-        return;
-    }
+    if (!spaceId || !accessToken || spaceId === 'SEU_SPACE_ID_AQUI' || accessToken === 'SEU_ACCESS_TOKEN_AQUI') { return; }
 
     const url = `https://cdn.contentful.com/spaces/${spaceId}/environments/master/entries?access_token=${accessToken}&content_type=resultadoDaGaleria`;
 
