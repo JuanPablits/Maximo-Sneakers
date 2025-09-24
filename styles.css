@@ -114,7 +114,7 @@ p {
 }
 
 
-/* SEÇÃO DE PREÇOS (REVERTIDO AO SEU CÓDIGO ORIGINAL) */
+/* SEÇÃO DE PREÇOS (REVERTIDO AO ESTILO ORIGINAL) */
 .pricing-section {
     padding: 80px 5%;
     background-color: #1c1c1c;
@@ -124,14 +124,6 @@ p {
     max-width: 900px;
     margin: 0 auto;
     text-align: center;
-}
-
-.pricing-container h2 {
-    font-family: var(--anton-font);
-    font-size: 2.8rem;
-    letter-spacing: 1px;
-    margin-bottom: 10px;
-    color: var(--text-light);
 }
 
 .category-title {
@@ -150,7 +142,6 @@ p {
     display: grid;
     grid-template-columns: 1fr;
     gap: 15px;
-    align-items: stretch;
 }
 
 .price-item {
@@ -161,8 +152,6 @@ p {
     padding: 15px 25px;
     border-radius: 8px;
     transition: transform 0.3s ease, background-color 0.3s ease;
-    height: 100%;
-    box-sizing: border-box;
 }
 
 .price-item:hover {
@@ -172,7 +161,7 @@ p {
 
 .service-name {
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     gap: 15px;
     text-align: left;
 }
@@ -180,15 +169,12 @@ p {
 .service-details {
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    flex-grow: 1;
 }
 
 .service-details span:first-child {
     font-size: 1.1rem;
     font-weight: bold;
     font-family: var(--roboto-font);
-    line-height: 1.2;
 }
 
 .price-icon {
@@ -197,7 +183,6 @@ p {
     border-radius: 50%;
     object-fit: cover;
     flex-shrink: 0;
-    margin-top: 2px;
 }
 
 .service-price {
@@ -206,10 +191,6 @@ p {
     color: #fff;
     min-width: 100px;
     text-align: right;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: flex-end;
 }
 
 .service-price small {
@@ -219,7 +200,6 @@ p {
     color: #ccc;
     font-weight: normal;
     margin-bottom: -5px;
-    line-height: 1;
 }
 
 .observation-note {
@@ -238,37 +218,47 @@ p {
     font-size: 0.8rem;
     color: #aaa;
     font-weight: 300;
-    line-height: 1.2;
-    margin-top: 2px;
+    text-align: left;
+    margin-top: 4px;
 }
 
 
-/* SPLIT SECTION (RESULTADOS E CUSTOMIZAÇÕES) */
+/* SPLIT SECTION (BASE PARA GALERIAS) */
 .split-section {
     display: flex;
     align-items: center;
-    background-color: #fff;
-    color: var(--text-dark);
     padding: 80px 5%;
     gap: 40px;
     max-width: 1200px;
     margin: 40px auto;
 }
 
-#customizacao-galeria {
-    background-color: #1c1c1c;
-    color: var(--text-light);
-}
-
-#customizacao-galeria h2 {
-    color: var(--primary-accent);
-}
-
 .text-content {
     flex: 1;
 }
 
-.text-content h2, h1 {
+/* Estilo para seções com fundo escuro - APENAS IDEIAS E FEEDBACKS AGORA */
+#ideias-customizacao, #feedbacks {
+    background-color: #1c1c1c;
+    color: var(--text-light);
+}
+
+#ideias-customizacao .text-content h2, #feedbacks .text-content h2 {
+    font-family: Helvetica, sans-serif;
+    font-size: 2.2rem;
+    letter-spacing: 1px;
+    margin-top: 0;
+    font-weight: bold;
+    color: var(--primary-accent);
+}
+
+/* Estilo para seções com fundo branco - CUSTOMIZAÇÕES E TRANSFORMAÇÃO */
+#customizacoes-realizadas, #transformacao { /* Adicionado #customizacoes-realizadas aqui */
+    background-color: #fff;
+    color: var(--text-dark);
+}
+
+#customizacoes-realizadas .text-content h2, #transformacao .text-content h2 { /* Adicionado #customizacoes-realizadas aqui */
     font-family: Helvetica, sans-serif;
     font-size: 2.2rem;
     letter-spacing: 1px;
@@ -276,6 +266,7 @@ p {
     font-weight: 900;
     color: var(--primary-blue);
 }
+
 
 .image-gallery {
     flex: 1;
@@ -296,6 +287,11 @@ p {
     height: 100%;
     object-fit: cover;
     display: none;
+}
+
+#feedbacks-slider .slide {
+    object-fit: contain;
+    background-color: #000;
 }
 
 .slide.active {
@@ -387,27 +383,6 @@ p {
 }
 
 
-/* ##### ESTILO DA SEÇÃO DE FEEDBACKS (ÚNICA ADIÇÃO) ##### */
-#feedbacks {
-    background-color: #1c1c1c;
-    color: var(--text-light);
-}
-
-#feedbacks .text-content h2 {
-    font-family: Helvetica, sans-serif;
-    font-size: 2.2rem;
-    letter-spacing: 1px;
-    margin-top: 0;
-    font-weight: bold;
-    color: var(--primary-accent);
-}
-
-#feedbacks-slider .slide {
-    object-fit: contain;
-    background-color: #000;
-}
-
-
 /* CONTATO */
 .contact-section {
     padding: 80px 5%;
@@ -468,7 +443,7 @@ p {
 }
 
 .social-icon img {
-    width: 100px; /* REVERTIDO PARA SEU TAMANHO ORIGINAL */
+    width: 100px;
     height: 100px;
 }
 
@@ -476,26 +451,26 @@ p {
 /* FOOTER */
 .main-footer {
     text-align: center;
-    padding: 40px 20px; 
-    background-color: #0a0a0a; 
-    border-top: 1px solid #222; 
+    padding: 40px 20px;
+    background-color: #0a0a0a;
+    border-top: 1px solid #222;
 }
 
 .main-footer p {
-    margin: 5px 0; 
+    margin: 5px 0;
     font-size: 0.9rem;
-    color: #888; 
+    color: #888;
 }
 
 .main-footer a {
-    color: #aaa; 
+    color: #aaa;
     text-decoration: none;
     font-weight: bold;
-    transition: color 0.3s ease; 
+    transition: color 0.3s ease;
 }
 
 .main-footer a:hover {
-    color: var(--primary-accent); 
+    color: var(--primary-accent);
 }
 
 
@@ -588,9 +563,15 @@ p {
         text-align: center;
         margin-bottom: 30px;
     }
-    .text-content h2, #customizacao-galeria .text-content h2, #feedbacks .text-content h2 {
+    /* Estilos para H2 nas seções brancas (Customizações e Transformação) */
+    #customizacoes-realizadas .text-content h2, #transformacao .text-content h2 {
         font-size: 2rem;
     }
+    /* Estilos para H2 nas seções escuras (Ideias e Feedbacks) */
+    #ideias-customizacao .text-content h2, #feedbacks .text-content h2 {
+        font-size: 2rem;
+    }
+
     .image-gallery {
         width: 100%;
         max-width: 400px;
