@@ -114,7 +114,7 @@ p {
 }
 
 
-/* SEÇÃO DE PREÇOS (REVERTIDO AO ESTILO ORIGINAL) */
+/* SEÇÃO DE PREÇOS (COM AMBOS OS ESTILOS) */
 .pricing-section {
     padding: 80px 5%;
     background-color: #1c1c1c;
@@ -131,20 +131,83 @@ p {
     font-size: 1.8rem;
     letter-spacing: 1.5px;
     color: var(--primary-accent);
-    margin-top: 40px;
+    margin-top: 60px;
     margin-bottom: 25px;
     border-bottom: 2px solid var(--primary-accent);
     display: inline-block;
     padding-bottom: 5px;
 }
 
+/* ESTILO PARA LAYOUT DE CARDS EM LISTA (LIMPEZAS DE TÊNIS) */
+.price-card-list .price-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    text-align: left;
+    background-color: #2b2b2b;
+    padding: 20px 25px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+.price-card-list .price-item:hover {
+    transform: scale(1.02);
+    background-color: var(--primary-blue);
+}
+
+.price-card-list .service-name {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+}
+
+.price-card-list .service-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.price-card-list .service-details span:first-child {
+    font-family: var(--anton-font);
+    font-size: 1.5rem;
+    letter-spacing: 1px;
+    color: #fff;
+    margin-bottom: 5px;
+}
+
+.price-card-list .price-list-subtitle {
+    font-family: var(--roboto-font);
+    font-weight: 400;
+    color: #aaa;
+    margin-left: 5px;
+    font-size: 1rem;
+}
+
+.price-card-list .price-list-description {
+    font-family: 'Helvetica', sans-serif;
+    font-size: 0.9rem;
+    color: #aaa;
+    max-width: 600px;
+    margin: 0;
+    line-height: 1.5;
+}
+
+.price-card-list .price-list-price {
+    font-family: var(--anton-font);
+    font-size: 1.8rem;
+    color: #fff;
+    white-space: nowrap;
+    margin-left: 20px;
+}
+
+/* ESTILO PARA LAYOUT DE CARDS EM GRADE (OUTRAS CATEGORIAS) */
 .pricing-grid {
     display: grid;
     grid-template-columns: 1fr;
     gap: 15px;
 }
 
-.price-item {
+.pricing-grid .price-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -154,27 +217,16 @@ p {
     transition: transform 0.3s ease, background-color 0.3s ease;
 }
 
-.price-item:hover {
+.pricing-grid .price-item:hover {
     transform: scale(1.03);
     background-color: var(--primary-blue);
 }
 
-.service-name {
+.pricing-grid .service-name {
     display: flex;
     align-items: center;
     gap: 15px;
     text-align: left;
-}
-
-.service-details {
-    display: flex;
-    flex-direction: column;
-}
-
-.service-details span:first-child {
-    font-size: 1.1rem;
-    font-weight: bold;
-    font-family: var(--roboto-font);
 }
 
 .price-icon {
@@ -185,7 +237,7 @@ p {
     flex-shrink: 0;
 }
 
-.service-price {
+.pricing-grid .service-price {
     font-family: var(--anton-font);
     font-size: 1.7rem;
     color: #fff;
@@ -193,7 +245,8 @@ p {
     text-align: right;
 }
 
-.service-price small {
+/* Regra para "a partir de" */
+.pricing-grid .service-price small, .price-card-list .price-list-price small {
     display: block;
     font-family: var(--roboto-font);
     font-size: 0.7rem;
@@ -202,28 +255,27 @@ p {
     margin-bottom: -5px;
 }
 
-.observation-note {
-    background-color: rgba(0, 212, 255, 0.1);
-    border-left: 4px solid var(--primary-accent);
-    padding: 15px;
-    margin: 25px 0;
-    text-align: left;
-    border-radius: 0 8px 8px 0;
-    font-size: 0.9rem;
-    color: #ddd;
+/* NOVOS ESTILOS PARA PREÇO DE COMBO */
+.price-combo {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+.old-price {
+    font-size: 1.2rem;
+    color: #777;
+    text-decoration: line-through;
+    font-family: var(--roboto-font);
+    font-weight: 400;
+}
+.new-price {
+    font-family: var(--anton-font);
+    font-size: 1.7rem;
+    color: #fff;
 }
 
-.special-description {
-    font-family: 'Helvetica', sans-serif;
-    font-size: 0.8rem;
-    color: #aaa;
-    font-weight: 300;
-    text-align: left;
-    margin-top: 4px;
-}
 
-
-/* SPLIT SECTION (BASE PARA GALERIAS) */
+/* SPLIT SECTION (GALERIAS) */
 .split-section {
     display: flex;
     align-items: center;
@@ -237,7 +289,6 @@ p {
     flex: 1;
 }
 
-/* Estilo para seções com fundo escuro - APENAS IDEIAS E FEEDBACKS AGORA */
 #ideias-customizacao, #feedbacks {
     background-color: #1c1c1c;
     color: var(--text-light);
@@ -252,13 +303,12 @@ p {
     color: var(--primary-accent);
 }
 
-/* Estilo para seções com fundo branco - CUSTOMIZAÇÕES E TRANSFORMAÇÃO */
-#customizacoes-realizadas, #transformacao { /* Adicionado #customizacoes-realizadas aqui */
+#customizacoes-realizadas, #transformacao {
     background-color: #fff;
     color: var(--text-dark);
 }
 
-#customizacoes-realizadas .text-content h2, #transformacao .text-content h2 { /* Adicionado #customizacoes-realizadas aqui */
+#customizacoes-realizadas .text-content h2, #transformacao .text-content h2 {
     font-family: Helvetica, sans-serif;
     font-size: 2.2rem;
     letter-spacing: 1px;
@@ -291,9 +341,11 @@ p {
 
 #feedbacks-slider .slide {
     object-fit: contain;
-    background-color: #000;
+    background-color: #000; /* Essa linha adiciona a borda preta */
 }
-
+#ideias-slider .slide {
+    object-fit: contain;
+}
 .slide.active {
     display: block;
 }
@@ -443,8 +495,8 @@ p {
 }
 
 .social-icon img {
-    width: 100px;
-    height: 100px;
+    width: 30px;
+    height: 30px;
 }
 
 
@@ -520,16 +572,20 @@ p {
     }
     .category-title {
         font-size: 1.5rem;
-        margin-top: 30px;
-        margin-bottom: 20px;
+    }
+    .price-card-list .price-item, .pricing-grid .price-item {
+        padding: 12px 15px;
+    }
+    .price-card-list .service-details span:first-child {
+        font-size: 1.2rem;
+    }
+    .price-card-list .price-list-price {
+        font-size: 1.5rem;
     }
     .pricing-grid {
         gap: 10px;
     }
-    .price-item {
-        padding: 12px 15px;
-    }
-    .service-name {
+    .pricing-grid .service-name {
         font-size: 1rem;
         gap: 10px;
     }
@@ -537,23 +593,12 @@ p {
         width: 30px;
         height: 30px;
     }
-    .service-price {
+    .pricing-grid .service-price {
         font-size: 1.4rem;
         min-width: 70px;
     }
-    .service-price small {
-        font-size: 0.6rem;
-    }
-    .observation-note {
-        font-size: 0.8rem;
-        padding: 10px;
-        margin: 15px 0;
-    }
-    .special-description {
-        font-size: 0.75rem;
-    }
 
-    /* SPLIT SECTION (RESULTADOS, CUSTOMIZAÇÕES E FEEDBACKS) */
+    /* SPLIT SECTION (GALERIAS) */
     .split-section {
         flex-direction: column;
         padding: 40px 20px;
@@ -563,15 +608,9 @@ p {
         text-align: center;
         margin-bottom: 30px;
     }
-    /* Estilos para H2 nas seções brancas (Customizações e Transformação) */
-    #customizacoes-realizadas .text-content h2, #transformacao .text-content h2 {
+    .text-content h2, #customizacoes-realizadas .text-content h2, #ideias-customizacao .text-content h2, #feedbacks .text-content h2 {
         font-size: 2rem;
     }
-    /* Estilos para H2 nas seções escuras (Ideias e Feedbacks) */
-    #ideias-customizacao .text-content h2, #feedbacks .text-content h2 {
-        font-size: 2rem;
-    }
-
     .image-gallery {
         width: 100%;
         max-width: 400px;

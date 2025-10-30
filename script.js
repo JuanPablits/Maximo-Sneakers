@@ -3,7 +3,6 @@
 // ##################################################################
 const spaceId = 'pusavj4b0ybx';
 const accessToken = 'knsoFyXohlck3hu9veCzUctMXWK74f4sVnNsLZEz1EI';
-
 // Variáveis globais para os sliders
 let slides = [];
 let currentSlide = 0;
@@ -45,9 +44,14 @@ async function carregarServicos() {
         const data = await response.json();
         if (!response.ok || !data.items) { throw new Error('Falha ao carregar os serviços.'); }
         
-        const assets = data.includes && data.includes.Asset ? new Map(data.includes.Asset.map(asset => [asset.sys.id, asset.fields])) : new Map();
+        const assets = data.includes?.Asset ? new Map(data.includes.Asset.map(asset => [asset.sys.id, asset.fields])) : new Map();
 
-        const categorias = { limpezas: [], restauracoes: [], customizacoes: [], extras: [] };
+        const categorias = {
+            limpezas: [],
+            restauracoes: [],
+            customizacoes: [],
+            extras: []
+        };
         data.items.forEach(item => {
             switch (item.fields.categoria) {
                 case 'Limpezas': categorias.limpezas.push(item); break;
@@ -57,53 +61,86 @@ async function carregarServicos() {
             }
         });
 
-        categorias.limpezas.sort((a, b) => {
-            const nameA = a.fields.nomeDoServico.toLowerCase();
-            const nameB = b.fields.nomeDoServico.toLowerCase();
-            const priority = (name) => {
-                if (name.startsWith('limpeza 1')) return 1;
-                if (name.startsWith('limpeza 2')) return 2;
-                if (name.startsWith('limpeza 3')) return 3;
-                if (name.startsWith('limpeza exclusive')) return 4;
-                return 5;
-            };
-            return priority(nameA) - priority(nameB) || a.fields.preco - b.fields.preco;
-        });
+        const sortByOrder = (a, b) => (a.fields.ordemDeExibicao || 99) - (b.fields.ordemDeExibicao || 99);
+        Object.values(categorias).forEach(cat => cat.sort(sortByOrder));
 
-        categorias.restauracoes.sort((a, b) => (a.fields.ordemDeExibicao || 99) - (b.fields.ordemDeExibicao || 99));
-        categorias.customizacoes.sort((a, b) => a.fields.preco - b.fields.preco);
-        categorias.extras.sort((a, b) => a.fields.preco - b.fields.preco);
-
-        const renderizarServicos = (servicos, container) => {
+        // FUNÇÃO PARA RENDERIZAR CARDS EM LISTA (TÊNIS)
+        const renderizarCardList = (servicos, container) => {
             if (!container) return;
             container.innerHTML = '';
             servicos.forEach(item => {
-                const { nomeDoServico, preco, observacaoDoPreco, icone } = item.fields;
+                const { nomeDoServico, subtitulo, descricaoLonga, preco, observacaoDoPreco, icone, precoAntigo } = item.fields;
                 const urlIcone = icone ? `https:${assets.get(icone.sys.id)?.file?.url}` : 'img/placeholder.png';
-                const precoObservacaoHTML = observacaoDoPreco ? `<small>${observacaoDoPreco}</small>` : '';
-                let descriptionHTML = '';
-                if (nomeDoServico.toLowerCase() === 'limpeza exclusive') {
-                    descriptionHTML = `<span class="special-description">Para pares de grife e edições exclusivas.</span>`;
+                const subtituloHTML = subtitulo ? `<span class="price-list-subtitle">(${subtitulo.toUpperCase()})</span>` : '';
+                const descricaoHTML = descricaoLonga ? `<p class="price-list-description">${descricaoLonga}</p>` : '';
+                
+                let precoHTML = '';
+                if (precoAntigo) {
+                    precoHTML = `<div class="price-combo"><span class="old-price">R$ ${precoAntigo}</span> <span class="new-price">R$ ${preco}</span></div>`;
+                } else {
+                    const precoObservacaoHTML = observacaoDoPreco ? `<small>${observacaoDoPreco}</small>` : '';
+                    precoHTML = `${precoObservacaoHTML} R$${preco}`;
                 }
-                const itemHTML = `<div class="price-item"><div class="service-name"><img src="${urlIcone}" alt="Ícone de ${nomeDoServico}" class="price-icon"><div class="service-details"><span>${nomeDoServico.toUpperCase()}</span>${descriptionHTML}</div></div><div class="service-price">${precoObservacaoHTML} R$ ${preco}</div></div>`;
+                
+                const itemHTML = `
+                    <div class="price-item">
+                        <div class="service-name">
+                            <img src="${urlIcone}" alt="Ícone de ${nomeDoServico}" class="price-icon">
+                            <div class="service-details">
+                                <span>${nomeDoServico.toUpperCase()} ${subtituloHTML}</span>
+                                ${descricaoHTML}
+                            </div>
+                        </div>
+                        <div class="price-list-price">${precoHTML}</div>
+                    </div>
+                `;
                 container.innerHTML += itemHTML;
             });
         };
 
-        const limpezasGrid = document.getElementById('limpezas-grid');
-        const limpezasOutrosGrid = document.getElementById('limpezas-outros-grid');
-        const limpezasTenis = categorias.limpezas.filter(s => !s.fields.nomeDoServico.toLowerCase().includes('boné') && !s.fields.nomeDoServico.toLowerCase().includes('slides') && !s.fields.nomeDoServico.toLowerCase().includes('bolsas'));
-        const limpezasOutros = categorias.limpezas.filter(s => s.fields.nomeDoServico.toLowerCase().includes('boné') || s.fields.nomeDoServico.toLowerCase().includes('slides') || s.fields.nomeDoServico.toLowerCase().includes('bolsas'));
+        // FUNÇÃO PARA RENDERIZAR CARDS EM GRADE (OUTROS)
+        const renderizarGrid = (servicos, container) => {
+            if (!container) return;
+            container.innerHTML = '';
+            servicos.forEach(item => {
+                const { nomeDoServico, preco, observacaoDoPreco, icone, precoAntigo } = item.fields;
+                const urlIcone = icone ? `https:${assets.get(icone.sys.id)?.file?.url}` : 'img/placeholder.png';
+
+                let precoHTML = '';
+                if (precoAntigo) {
+                    precoHTML = `<div class="price-combo"><span class="old-price">R$ ${precoAntigo}</span> <span class="new-price">R$ ${preco}</span></div>`;
+                } else {
+                    const precoObservacaoHTML = observacaoDoPreco ? `<small>${observacaoDoPreco}</small>` : '';
+                    precoHTML = `${precoObservacaoHTML} R$ ${preco}`;
+                }
+
+                const itemHTML = `
+                    <div class="price-item">
+                        <div class="service-name">
+                            <img src="${urlIcone}" alt="Ícone de ${nomeDoServico}" class="price-icon">
+                            <span>${nomeDoServico.toUpperCase()}</span>
+                        </div>
+                        <div class="service-price">${precoHTML}</div>
+                    </div>
+                `;
+                container.innerHTML += itemHTML;
+            });
+        };
         
-        renderizarServicos(limpezasTenis, limpezasGrid);
-        renderizarServicos(limpezasOutros, limpezasOutrosGrid);
-        renderizarServicos(categorias.restauracoes, document.getElementById('restauracoes-grid'));
-        renderizarServicos(categorias.customizacoes, document.getElementById('customizacoes-grid'));
-        renderizarServicos(categorias.extras, document.getElementById('extras-grid'));
+        const limpezasTenis = categorias.limpezas.filter(s => !s.fields.nomeDoServico.toLowerCase().includes('bolsa') && !s.fields.nomeDoServico.toLowerCase().includes('boné') && !s.fields.nomeDoServico.toLowerCase().includes('slides'));
+        const limpezasOutros = categorias.limpezas.filter(s => s.fields.nomeDoServico.toLowerCase().includes('bolsa') || s.fields.nomeDoServico.toLowerCase().includes('boné') || s.fields.nomeDoServico.toLowerCase().includes('slides'));
+
+        renderizarCardList(limpezasTenis, document.getElementById('limpezas-tenis-list'));
+        renderizarGrid(limpezasOutros, document.getElementById('limpezas-outros-grid'));
+        renderizarGrid(categorias.restauracoes, document.getElementById('restauracoes-grid'));
+        renderizarGrid(categorias.customizacoes, document.getElementById('customizacoes-grid'));
+        renderizarGrid(categorias.extras, document.getElementById('extras-grid'));
+
     } catch (error) {
         console.error('ERRO EM carregarServicos:', error);
     }
 }
+
 
 // ##################################################################
 // # FUNÇÃO PARA CARREGAR RESULTADOS (GALERIA PRINCIPAL)
