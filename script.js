@@ -3,6 +3,7 @@
 // ##################################################################
 const spaceId = 'pusavj4b0ybx';
 const accessToken = 'knsoFyXohlck3hu9veCzUctMXWK74f4sVnNsLZEz1EI';
+
 // Variáveis globais para os sliders
 let slides = [];
 let currentSlide = 0;
@@ -50,21 +51,24 @@ async function carregarServicos() {
             limpezas: [],
             restauracoes: [],
             customizacoes: [],
-            extras: []
+            extras: [],
+            combos: []
         };
+        
         data.items.forEach(item => {
             switch (item.fields.categoria) {
                 case 'Limpezas': categorias.limpezas.push(item); break;
                 case 'Restaurações e Pinturas': categorias.restauracoes.push(item); break;
                 case 'Customizações': categorias.customizacoes.push(item); break;
                 case 'Serviços Extras': categorias.extras.push(item); break;
+                case 'Combos': categorias.combos.push(item); break;
             }
         });
 
         const sortByOrder = (a, b) => (a.fields.ordemDeExibicao || 99) - (b.fields.ordemDeExibicao || 99);
         Object.values(categorias).forEach(cat => cat.sort(sortByOrder));
 
-        // FUNÇÃO PARA RENDERIZAR CARDS EM LISTA (TÊNIS)
+        // FUNÇÃO PARA RENDERIZAR CARDS EM LISTA (TÊNIS, COMBOS, EXTRAS)
         const renderizarCardList = (servicos, container) => {
             if (!container) return;
             container.innerHTML = '';
@@ -98,13 +102,15 @@ async function carregarServicos() {
             });
         };
 
-        // FUNÇÃO PARA RENDERIZAR CARDS EM GRADE (OUTROS)
+        // FUNÇÃO PARA RENDERIZAR CARDS EM GRADE (OUTROS ITENS)
         const renderizarGrid = (servicos, container) => {
             if (!container) return;
             container.innerHTML = '';
             servicos.forEach(item => {
-                const { nomeDoServico, preco, observacaoDoPreco, icone, precoAntigo } = item.fields;
+                const { nomeDoServico, preco, observacaoDoPreco, icone, descricaoLonga, subtitulo, precoAntigo } = item.fields;
                 const urlIcone = icone ? `https:${assets.get(icone.sys.id)?.file?.url}` : 'img/placeholder.png';
+                const subtituloHTML = subtitulo ? `<span class="service-subtitle">${subtitulo.toUpperCase()}</span>` : '';
+                const descricaoHTML = descricaoLonga ? `<p class="service-description">${descricaoLonga}</p>` : '';
 
                 let precoHTML = '';
                 if (precoAntigo) {
@@ -118,8 +124,11 @@ async function carregarServicos() {
                     <div class="price-item">
                         <div class="service-name">
                             <img src="${urlIcone}" alt="Ícone de ${nomeDoServico}" class="price-icon">
-                            <span>${nomeDoServico.toUpperCase()}</span>
+                            <div class="service-details">
+                                <span>${nomeDoServico.toUpperCase()} ${subtituloHTML}</span>
+                            </div>
                         </div>
+                        ${descricaoHTML}
                         <div class="service-price">${precoHTML}</div>
                     </div>
                 `;
@@ -127,14 +136,23 @@ async function carregarServicos() {
             });
         };
         
-        const limpezasTenis = categorias.limpezas.filter(s => !s.fields.nomeDoServico.toLowerCase().includes('bolsa') && !s.fields.nomeDoServico.toLowerCase().includes('boné') && !s.fields.nomeDoServico.toLowerCase().includes('slides'));
-        const limpezasOutros = categorias.limpezas.filter(s => s.fields.nomeDoServico.toLowerCase().includes('bolsa') || s.fields.nomeDoServico.toLowerCase().includes('boné') || s.fields.nomeDoServico.toLowerCase().includes('slides'));
+        const limpezasTenis = categorias.limpezas.filter(s => 
+            !s.fields.nomeDoServico.toLowerCase().includes('bolsa') && 
+            !s.fields.nomeDoServico.toLowerCase().includes('boné') && 
+            !s.fields.nomeDoServico.toLowerCase().includes('slides')
+        );
+        const limpezasOutros = categorias.limpezas.filter(s => 
+            s.fields.nomeDoServico.toLowerCase().includes('bolsa') || 
+            s.fields.nomeDoServico.toLowerCase().includes('boné') || 
+            s.fields.nomeDoServico.toLowerCase().includes('slides')
+        );
 
         renderizarCardList(limpezasTenis, document.getElementById('limpezas-tenis-list'));
         renderizarGrid(limpezasOutros, document.getElementById('limpezas-outros-grid'));
+        renderizarCardList(categorias.combos, document.getElementById('combos-grid'));
         renderizarGrid(categorias.restauracoes, document.getElementById('restauracoes-grid'));
         renderizarGrid(categorias.customizacoes, document.getElementById('customizacoes-grid'));
-        renderizarGrid(categorias.extras, document.getElementById('extras-grid'));
+        renderizarCardList(categorias.extras, document.getElementById('extras-grid'));
 
     } catch (error) {
         console.error('ERRO EM carregarServicos:', error);
